@@ -1,0 +1,67 @@
+---
+type Variant =
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'ghost'
+  | 'outlineOnDark'
+  | 'outlineOnPrimary';
+type Size = 'sm' | 'md' | 'lg';
+
+interface Props {
+  variant?: Variant;
+  size?: Size;
+  /** Render as <a> when href is provided, otherwise <button>. */
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  external?: boolean;
+  class?: string;
+  ariaLabel?: string;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
+  external = false,
+  class: className = '',
+  ariaLabel,
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center font-semibold rounded-md transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-white disabled:opacity-60 disabled:pointer-events-none';
+
+const variants: Record<Variant, string> = {
+  primary: 'bg-primary text-brand-white hover:bg-primary-dark',
+  secondary: 'bg-brand-white text-neutral-900 border border-neutral-300 hover:border-primary hover:text-primary',
+  accent: 'bg-accent text-brand-white hover:opacity-90',
+  ghost: 'bg-transparent text-neutral-900 hover:text-primary',
+  outlineOnDark:
+    'bg-transparent text-brand-white border border-neutral-100/30 hover:border-primary-light hover:text-primary-light focus-visible:ring-offset-brand-black',
+  /** For secondary actions on primary blue backgrounds (WCAG-friendly borders). */
+  outlineOnPrimary:
+    'bg-transparent text-brand-white border border-brand-white/40 hover:border-brand-white hover:bg-brand-white/10 focus-visible:ring-offset-primary',
+};
+
+const sizes: Record<Size, string> = {
+  sm: 'text-small px-3 py-2',
+  md: 'text-body px-4 py-2',
+  lg: 'text-h6 px-6 py-3',
+};
+
+const classes = [base, variants[variant], sizes[size], className];
+const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+{
+  href ? (
+    <a href={href} class:list={classes} aria-label={ariaLabel} {...externalAttrs}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class:list={classes} aria-label={ariaLabel}>
+      <slot />
+    </button>
+  )
+}

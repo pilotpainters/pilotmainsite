@@ -1,0 +1,420 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Container from '@/components/layout/Container.astro';
+import Card from '@/components/ui/Card.astro';
+import Button from '@/components/ui/Button.astro';
+import CTABand from '@/components/ui/CTABand.astro';
+import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
+import { getEntry, getCollection } from 'astro:content';
+import { withBase } from '@/lib/url';
+import { resolvePublicImage } from '@/lib/images';
+import { siteConfig } from '@config/site.config';
+ 
+const homeEntry = await getEntry('pages', 'home');
+if (!homeEntry) throw new Error('Missing content entry: content/pages/home.md');
+const home = homeEntry.data.home;
+if (!home) throw new Error('Home page data missing from pages collection entry.');
+
+const services = (await getCollection('services')).filter((s) => !s.data.draft);
+services.sort((a, b) => {
+  const af = a.data.featured === true ? 0 : 1;
+  const bf = b.data.featured === true ? 0 : 1;
+  if (af !== bf) return af - bf;
+  return (a.data.order ?? 999) - (b.data.order ?? 999);
+});
+
+const projects = (await getCollection('projects')).filter((p) => !p.data.draft);
+const featuredProjects = projects.filter((p) => p.data.featured).slice(0, 3);
+const projectsToShow = (featuredProjects.length >= 3 ? featuredProjects : projects.slice(0, 3)).slice(0, 3);
+
+const testimonials = (await getCollection('testimonials')).filter((t) => !t.data.draft);
+const featuredTestimonial = testimonials.find((t) => t.data.featured) ?? testimonials[0];
+
+const heroBg = home.hero.background;
+
+const gradientDirectionMap: Record<string, string> = {
+  t: 'bg-gradient-to-t',
+  tr: 'bg-gradient-to-tr',
+  r: 'bg-gradient-to-r',
+  br: 'bg-gradient-to-br',
+  b: 'bg-gradient-to-b',
+  bl: 'bg-gradient-to-bl',
+  l: 'bg-gradient-to-l',
+  tl: 'bg-gradient-to-tl',
+};
+const heroGradientDirection = heroBg.type === 'gradient' ? heroBg.direction ?? 'br' : 'br';
+
+const heroBgClasses: string[] = [];
+if (heroBg.type === 'solid') {
+  heroBgClasses.push(`bg-${heroBg.color}`);
+} else if (heroBg.type === 'gradient') {
+  heroBgClasses.push(gradientDirectionMap[heroGradientDirection] ?? gradientDirectionMap.br);
+  heroBgClasses.push(`from-${heroBg.from}`);
+  heroBgClasses.push(`to-${heroBg.to}`);
+} else {
+  heroBgClasses.push('bg-brand-black');
+}
+
+const heroImageSrc =
+  heroBg.type === 'image' ? resolvePublicImage(heroBg.src, 'project') : undefined;
+const shouldPreloadHeroImage = heroBg.type === 'image' && Boolean(heroImageSrc);
+
+const ratingHasAggregate = home.hero.rating.reviewCount > 0 && home.hero.rating.stars > 0;
+const localBusinessExtensionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${siteConfig.seo.siteUrl}#business`,
+  ...(ratingHasAggregate
+    ? {
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: home.hero.rating.stars,
+          reviewCount: home.hero.rating.reviewCount,
+        },
+      }
+    : {}),
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: `${siteConfig.company} Services`,
+    itemListElement: services.map((s) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: s.data.title,
+        description: s.data.summary,
+        areaServed: siteConfig.serviceAreas,
+      },
+      url: new URL(withBase(`/services/${s.data.slug ?? s.slug}/`), siteConfig.seo.siteUrl).toString(),
+    })),
+  },
+};
+const extraJsonLd = [localBusinessExtensionJsonLd];
+---
+
+<BaseLayout
+  title={home.seo.title}
+  description={home.seo.description}
+  image={home.seo.image}
+  canonical={home.seo.canonical}
+  jsonLd={extraJsonLd}
+>
+  {shouldPreloadHeroImage && (
+    <Fragment slot="head">
+      <link rel="preload" as="image" href={withBase(heroImageSrc!)} />
+    </Fragment>
+  )}
+
+  <main class="flex-1">
+    <!-- Hero -->
+    <Section
+      id="hero"
+      tone="white"
+      spacing="lg"
+      containerSize={null}
+      class:list={[
+        ...heroBgClasses,
+        'relative overflow-hidden',
+        'text-brand-white',
+      ]}
+    >
+      {heroBg.type === 'image' && heroImageSrc && (
+        <div class="absolute inset-0 -z-10">
+          <Image
+            src={withBase(heroImageSrc)}
+            alt={heroBg.alt}
+            width={1600}
+            height={900}
+            class="h-full w-full object-cover opacity-40"
+            loading="eager"
+          />
+          <div class="absolute inset-0 bg-brand-black/50" />
+        </div>
+      )}
+
+      <Container size="lg">
+        <div class="max-w-3xl">
+          <p class="text-caption uppercase tracking-wide text-neutral-100/90">{home.hero.eyebrow}</p>
+          <h1 class="mt-4 text-h1 text-brand-white">{home.hero.headline}</h1>
+          <p class="mt-6 text-body text-neutral-100/90">{home.hero.subheadline}</p>
+
+          <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button href={withBase(home.hero.primaryCta.href)} variant="accent" size="lg">
+              {home.hero.primaryCta.label}
+            </Button>
+            <Button href={withBase(home.hero.secondaryCta.href)} variant="secondary" size="lg">
+              {home.hero.secondaryCta.label}
+            </Button>
+          </div>
+
+          <div class="mt-8 flex flex-col gap-3 text-small text-neutral-100/90 sm:flex-row sm:items-center sm:gap-6">
+            <div class="flex items-center gap-2">
+              <Icon name="lucide:shield-check" class="h-5 w-5 text-primary-light" aria-hidden="true" />
+              <span>{home.hero.trustLine}</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1" aria-label={home.hero.rating.label}>
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <Icon
+                    name="lucide:star"
+                    class:list={[
+                      'h-4 w-4',
+                      idx < Math.round(home.hero.rating.stars) ? 'text-accent' : 'text-neutral-100/40',
+                    ]}
+                    aria-hidden="true"
+                  />
+                ))}
+              </div>
+              <span class="text-neutral-100/90">{home.hero.rating.summary}</span>
+              <a
+                href={withBase(home.hero.rating.readMoreHref)}
+                class="text-primary-light underline underline-offset-4 hover:text-brand-white"
+              >
+                {home.hero.rating.readMoreLabel}
+              </a>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Trust Strip -->
+    <Section
+      id="trust"
+      tone={home.trustStrip.tone}
+      spacing="sm"
+      containerSize={null}
+      class="border-b border-neutral-100"
+      aria-labelledby="trustHeading"
+    >
+      <Container size="lg">
+        <h2 id="trustHeading" class="sr-only">
+          {home.trustStrip.items.map((i) => i.label).join(', ')}
+        </h2>
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {home.trustStrip.items.map((item) => (
+            <Card variant="outlined" padding="md" class="bg-brand-white">
+              <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-md bg-primary-dark text-brand-white">
+                  <Icon name={`lucide:${item.icon}`} class="h-5 w-5" aria-hidden="true" />
+                </div>
+                <div>
+                  <p class="text-h5 text-neutral-900">{item.value}</p>
+                  <p class="text-small text-neutral-700">{item.label}</p>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Services -->
+    <Section id="services" tone="white" spacing="md" aria-labelledby="servicesHeading">
+      <Container size="lg">
+        <div class="max-w-2xl">
+          <h2 id="servicesHeading" class="text-h2 text-neutral-900">
+            {home.servicesOverview.heading}
+          </h2>
+          <p class="mt-4 text-body text-neutral-700">{home.servicesOverview.lead}</p>
+        </div>
+
+        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {services.slice(0, 4).map((service) => {
+            const slug = service.data.slug ?? service.slug;
+            const href = withBase(`/services/${slug}/`);
+            const imageSrc = resolvePublicImage(service.data.image, 'service');
+            return (
+              <a href={href} class="group block focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
+                <Card variant="outlined" padding="none" class="h-full overflow-hidden">
+                  <div class="aspect-[16/9] bg-neutral-50">
+                    <Image
+                      src={withBase(imageSrc)}
+                      alt=""
+                      width={640}
+                      height={360}
+                      class="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="p-6">
+                    <div class="flex items-center gap-2">
+                      <Icon
+                        name={`lucide:${service.data.icon}`}
+                        class="h-5 w-5 text-primary"
+                        aria-hidden="true"
+                      />
+                      <p class="text-h6 text-neutral-900 group-hover:text-primary">{service.data.title}</p>
+                    </div>
+                    <p class="mt-3 text-small text-neutral-700">{service.data.summary}</p>
+                    <div class="mt-5 inline-flex items-center gap-2 text-small text-primary">
+                      <span class="underline underline-offset-4">{home.servicesOverview.learnMoreLabel}</span>
+                      <Icon name="lucide:arrow-right" class="h-4 w-4" aria-hidden="true" />
+                    </div>
+                  </div>
+                </Card>
+              </a>
+            );
+          })}
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Process -->
+    <Section id="process" tone="neutral" spacing="md" aria-labelledby="processHeading">
+      <Container size="lg">
+        <div class="max-w-2xl">
+          <h2 id="processHeading" class="text-h2 text-neutral-900">
+            {home.process.heading}
+          </h2>
+          <p class="mt-4 text-body text-neutral-700">{home.process.lead}</p>
+        </div>
+
+        <div class="mt-10">
+          <div class="grid gap-6 md:grid-cols-4">
+            {home.process.steps.map((step, idx) => (
+              <Card variant="outlined" padding="md" class="relative">
+                {idx < home.process.steps.length - 1 && (
+                  <div class="hidden md:block absolute right-0 top-7 h-px w-8 bg-neutral-300 translate-x-1/2" aria-hidden="true" />
+                )}
+                <div class="flex items-start gap-4 md:flex-col md:gap-3">
+                  <div class="flex items-center gap-3 md:w-full">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-dark text-brand-white">
+                      <span class="text-small">{idx + 1}</span>
+                    </div>
+                    <div class="flex h-10 w-10 items-center justify-center rounded-md bg-neutral-50 text-primary">
+                      <Icon name={`lucide:${step.icon}`} class="h-5 w-5" aria-hidden="true" />
+                    </div>
+                  </div>
+                  <div>
+                    <p class="text-h6 text-neutral-900">{step.title}</p>
+                    <p class="mt-2 text-small text-neutral-700">{step.description}</p>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Featured Projects -->
+    <Section id="projects" tone="white" spacing="md" aria-labelledby="projectsHeading">
+      <Container size="lg">
+        <div class="max-w-2xl">
+          <h2 id="projectsHeading" class="text-h2 text-neutral-900">
+            {home.featuredProjects.heading}
+          </h2>
+          <p class="mt-4 text-body text-neutral-700">{home.featuredProjects.lead}</p>
+        </div>
+
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+          {projectsToShow.map((project) => {
+            const imageSrc = resolvePublicImage(
+              project.data.imagePath ?? project.data.afterImagePath ?? project.data.beforeImagePath,
+              'project',
+            );
+            return (
+              <Card variant="outlined" padding="none" class="overflow-hidden">
+                <div class="aspect-[16/9] bg-neutral-50">
+                  <Image
+                    src={withBase(imageSrc)}
+                    alt=""
+                    width={640}
+                    height={360}
+                    class="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="p-6">
+                  <p class="text-h6 text-neutral-900">{project.data.title}</p>
+                  <div class="mt-3 flex flex-wrap items-center gap-3 text-small text-neutral-700">
+                    <span class="inline-flex items-center gap-2">
+                      <Icon name="lucide:map-pin" class="h-4 w-4 text-primary" aria-hidden="true" />
+                      {project.data.location}
+                    </span>
+                    <span class="inline-flex items-center rounded-full bg-neutral-50 px-3 py-1 text-caption text-neutral-700">
+                      {home.featuredProjects.typeTagLabel}: {project.data.projectType}
+                    </span>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+
+        <div class="mt-10">
+          <Button href={withBase(home.featuredProjects.viewAllHref)} variant="primary" size="md">
+            {home.featuredProjects.viewAllLabel}
+          </Button>
+        </div>
+      </Container>
+    </Section>
+
+    <!-- Testimonial -->
+    <Section
+      id="testimonial"
+      tone="neutral"
+      spacing="md"
+      aria-labelledby="testimonialHeading"
+    >
+      <Container size="lg">
+        <h2 id="testimonialHeading" class="text-h2 text-neutral-900">
+          {home.testimonialSlice.heading}
+        </h2>
+
+        {featuredTestimonial && (
+          <Card variant="outlined" padding="lg" class="mt-10 bg-brand-white">
+            <div class="grid gap-8 md:grid-cols-[1fr_auto] md:items-start">
+              <div>
+                <div class="flex items-center gap-1" aria-label={home.testimonialSlice.ratingAriaLabel}>
+                  {Array.from({ length: featuredTestimonial.data.rating }).map((_, idx) => (
+                    <Icon key={idx} name="lucide:star" class="h-5 w-5 text-accent" aria-hidden="true" />
+                  ))}
+                </div>
+                <blockquote class="mt-6 text-h3 text-neutral-900">
+                  “{featuredTestimonial.data.quote}”
+                </blockquote>
+                <p class="mt-6 text-small text-neutral-700">
+                  <span class="font-semibold text-neutral-900">{featuredTestimonial.data.author}</span>
+                  {featuredTestimonial.data.location ? ` · ${featuredTestimonial.data.location}` : ''}
+                </p>
+                <div class="mt-6">
+                  <a
+                    href={withBase(home.testimonialSlice.readMoreHref)}
+                    class="text-small text-primary underline underline-offset-4 hover:text-primary-dark"
+                  >
+                    {home.testimonialSlice.readMoreLabel}
+                  </a>
+                </div>
+              </div>
+              <div class="hidden md:block">
+                <Image
+                  src={withBase(
+                    resolvePublicImage(featuredTestimonial.data.avatarPath, 'avatar'),
+                  )}
+                  alt=""
+                  width={96}
+                  height={96}
+                  class="h-24 w-24 rounded-full bg-neutral-50"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </Card>
+        )}
+      </Container>
+    </Section>
+
+    <CTABand
+      id="cta"
+      tone={home.ctaBand.tone}
+      headline={home.ctaBand.heading}
+      subheading={home.ctaBand.subheading}
+      primaryCta={home.ctaBand.primaryCta}
+      callCtaLabel={home.ctaBand.callCtaLabel}
+    />
+  </main>
+</BaseLayout>

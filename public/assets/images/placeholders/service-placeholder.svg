@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-label="Service Image">
+  <rect width="640" height="360" fill="#0284C7"/>
+  <g fill="#FFFFFF" opacity="0.95">
+    <rect x="170" y="150" width="300" height="22" rx="11"/>
+    <rect x="230" y="182" width="180" height="14" rx="7" opacity="0.9"/>
+    <path d="M320 74c54 0 98 44 98 98s-44 98-98 98-98-44-98-98 44-98 98-98Zm0 34c-35 0-64 29-64 64s29 64 64 64 64-29 64-64-29-64-64-64Z" opacity="0.35"/>
+    <path d="M242 266h156v22H242z" opacity="0.9"/>
+    <path d="M274 240h12v26h-12zM354 240h12v26h-12z" opacity="0.9"/>
+    <path d="M300 222h40l8 18h-56l8-18Z" opacity="0.9"/>
+  </g>
+  <text x="320" y="320" text-anchor="middle" font-family="Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif" font-size="18" fill="#FFFFFF" opacity="0.95">Service Image</text>
+</svg>
+

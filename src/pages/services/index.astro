@@ -1,0 +1,125 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Container from '@/components/layout/Container.astro';
+import Card from '@/components/ui/Card.astro';
+import CTABand from '@/components/ui/CTABand.astro';
+import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
+import { getEntry, getCollection } from 'astro:content';
+import { withBase } from '@/lib/url';
+import { resolvePublicImage } from '@/lib/images';
+import { siteConfig } from '@config/site.config';
+
+const pageEntry = await getEntry('pages', 'services');
+if (!pageEntry?.data.servicesIndex) {
+  throw new Error('Missing content entry: content/pages/services.md with servicesIndex frontmatter.');
+}
+const si = pageEntry.data.servicesIndex;
+
+const allServices = (await getCollection('services')).filter((s) => !s.data.draft);
+allServices.sort((a, b) => a.data.order - b.data.order);
+
+const servicesJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${siteConfig.seo.siteUrl}#business`,
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: `${siteConfig.company} Painting Services`,
+    itemListElement: allServices.map((s, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      item: {
+        '@type': 'Service',
+        name: s.data.title,
+        description: s.data.summary,
+        url: new URL(withBase(`/services/${s.data.slug}/`), siteConfig.seo.siteUrl).href,
+        areaServed: siteConfig.serviceAreas,
+      },
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title={si.seo.title}
+  description={si.seo.description}
+  image={si.seo.image}
+  canonical={si.seo.canonical}
+  jsonLd={[servicesJsonLd]}
+>
+  <main class="flex-1">
+    <Section id="page-header" tone="neutral" spacing="lg" labelledby="services-page-heading">
+      <Container size="lg">
+        <h1 id="services-page-heading" class="text-h1 text-neutral-900">
+          {si.hero.heading}
+        </h1>
+        <p class="mt-6 max-w-3xl text-body text-neutral-700">{si.hero.lead}</p>
+        {si.intro?.lead && (
+          <p class="mt-4 max-w-3xl text-body text-neutral-700">{si.intro.lead}</p>
+        )}
+      </Container>
+    </Section>
+
+    <Section id="services-grid" tone="white" spacing="md" labelledby="services-grid-heading">
+      <Container size="lg">
+        <h2 id="services-grid-heading" class="sr-only">
+          {allServices.map((s) => s.data.title).join(', ')}
+        </h2>
+        <ul class="grid list-none gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {allServices.map((service) => {
+            const href = withBase(`/services/${service.data.slug}/`);
+            const imageSrc = resolvePublicImage(service.data.image, 'service');
+            return (
+              <li>
+                <a
+                  href={href}
+                  class="group block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-white"
+                >
+                  <Card variant="outlined" padding="none" class="h-full overflow-hidden">
+                    <div class="aspect-[16/9] bg-neutral-50">
+                      <Image
+                        src={withBase(imageSrc)}
+                        alt=""
+                        width={640}
+                        height={360}
+                        class="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div class="p-6">
+                      <div class="flex items-center gap-2">
+                        <Icon
+                          name={`lucide:${service.data.icon}`}
+                          class="h-5 w-5 text-primary"
+                          aria-hidden="true"
+                        />
+                        <h3 class="text-h3 text-neutral-900 group-hover:text-primary">{service.data.title}</h3>
+                      </div>
+                      <p class="mt-3 text-body text-neutral-700">{service.data.summary}</p>
+                      <div class="mt-5 inline-flex items-center gap-2 text-small text-primary">
+                        <span class="underline underline-offset-4">{si.grid.learnMoreLabel}</span>
+                        <Icon name="lucide:arrow-right" class="h-4 w-4" aria-hidden="true" />
+                      </div>
+                    </div>
+                  </Card>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </Container>
+    </Section>
+
+    <CTABand
+      id="cta"
+      tone={si.ctaBand.tone}
+      headline={si.ctaBand.heading}
+      subheading={si.ctaBand.subheading}
+      primaryCta={si.ctaBand.primaryCta}
+      callCtaLabel={si.ctaBand.callCtaLabel}
+      ariaLabelledby="services-cta-heading"
+    />
+  </main>
+</BaseLayout>

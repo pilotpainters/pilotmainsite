@@ -1,0 +1,115 @@
+---
+import Container from './Container.astro';
+import { siteConfig } from '@config/site.config';
+import { navigation } from '@config/navigation.config';
+import { withBase } from '@/lib/url';
+import { getCollection } from 'astro:content';
+
+const serviceEntries = (await getCollection('services'))
+  .filter((s) => !s.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const currentYear = new Date().getFullYear();
+const copyrightRange =
+  siteConfig.foundedYear && siteConfig.foundedYear < currentYear
+    ? `${siteConfig.foundedYear}–${currentYear}`
+    : String(currentYear);
+
+const socialEntries = Object.entries(siteConfig.socials).filter(([, href]) => Boolean(href)) as [
+  string,
+  string,
+][];
+---
+
+<footer class="bg-neutral-900 text-neutral-100">
+  <Container size="lg" class="py-16">
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <p class="text-h5 font-semibold text-brand-white">{siteConfig.company}</p>
+        <p class="mt-2 text-small text-neutral-300">{siteConfig.tagline}</p>
+
+        <dl class="mt-6 space-y-2 text-small">
+          <div>
+            <dt class="sr-only">Phone</dt>
+            <dd>
+              <a href={`tel:${siteConfig.phoneTel}`} class="text-neutral-100 hover:text-primary-light">
+                {siteConfig.phone}
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt class="sr-only">Email</dt>
+            <dd>
+              <a href={`mailto:${siteConfig.email}`} class="text-neutral-100 hover:text-primary-light">
+                {siteConfig.email}
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt class="sr-only">Service Areas</dt>
+            <dd class="text-neutral-300">{siteConfig.serviceAreas.join(' · ')}</dd>
+          </div>
+        </dl>
+      </div>
+
+      {
+        navigation.footerColumns.map((column) => (
+          <div>
+            <p class="text-caption uppercase tracking-wide text-neutral-300">{column.title}</p>
+            <ul class="mt-4 space-y-2 text-small">
+              {column.source === 'services'
+                ? serviceEntries.map((svc) => (
+                    <li>
+                      <a
+                        href={withBase(`/services/${svc.data.slug}/`)}
+                        class="text-neutral-100 hover:text-primary-light"
+                      >
+                        {svc.data.title}
+                      </a>
+                    </li>
+                  ))
+                : column.links.map((link) => (
+                    <li>
+                      <a
+                        href={withBase(link.href)}
+                        class="text-neutral-100 hover:text-primary-light"
+                        target={link.external ? '_blank' : undefined}
+                        rel={link.external ? 'noopener noreferrer' : undefined}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-12 flex flex-col gap-4 border-t border-neutral-700 pt-8 md:flex-row md:items-center md:justify-between">
+      <div class="space-y-1 text-caption text-neutral-300">
+        <p>© {copyrightRange} {siteConfig.legalName}. All rights reserved.</p>
+        <p>{siteConfig.license} · {siteConfig.insurance}</p>
+      </div>
+
+      {
+        socialEntries.length > 0 && (
+          <ul class="flex flex-wrap gap-4 text-small">
+            {socialEntries.map(([network, href]) => (
+              <li>
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-neutral-100 capitalize hover:text-primary-light"
+                >
+                  {network}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </Container>
+</footer>

@@ -1,0 +1,100 @@
+---
+import { siteConfig } from '@config/site.config';
+import { absoluteUrl } from '@/lib/url';
+
+interface Props {
+  /** Per-page title (without the site suffix); falls back to the configured default. */
+  title?: string;
+  /** Per-page description; falls back to the configured default. */
+  description?: string;
+  /** OG/Twitter share image — site-relative path or absolute URL. */
+  image?: string;
+  /** Override canonical URL; defaults to the current page absolute URL. */
+  canonical?: string;
+  /** Open Graph type — `website` for marketing pages, `article` for blog/case-studies. */
+  type?: 'website' | 'article';
+  /** Set true to ask search engines not to index the page. */
+  noindex?: boolean;
+  /** Optional additional JSON-LD blocks (Service, Review, FAQPage, etc.). */
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
+}
+
+const {
+  title,
+  description = siteConfig.seo.defaultDescription,
+  image = siteConfig.seo.defaultOgImage,
+  canonical,
+  type = 'website',
+  noindex = false,
+  jsonLd,
+} = Astro.props;
+
+const siteUrl = siteConfig.seo.siteUrl;
+
+const fullTitle = title
+  ? siteConfig.seo.titleTemplate.replace('%s', title)
+  : siteConfig.seo.defaultTitle;
+
+const canonicalUrl = canonical ?? Astro.url.href;
+const ogImageUrl = absoluteUrl(image, siteUrl);
+
+const localBusinessJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${siteUrl}#business`,
+  name: siteConfig.company,
+  legalName: siteConfig.legalName,
+  description: siteConfig.shortDescription,
+  url: siteUrl,
+  telephone: siteConfig.phoneTel,
+  email: siteConfig.email,
+  image: absoluteUrl(siteConfig.seo.defaultOgImage, siteUrl),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: siteConfig.address.street,
+    addressLocality: siteConfig.address.city,
+    addressRegion: siteConfig.address.region,
+    postalCode: siteConfig.address.postalCode,
+    addressCountry: siteConfig.address.country,
+  },
+  areaServed: siteConfig.serviceAreas.map((area) => ({ '@type': 'Place', name: area })),
+  openingHoursSpecification: siteConfig.businessHours
+    .filter((entry) => entry.opens && entry.closes)
+    .map((entry) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: entry.schemaDay,
+      opens: entry.opens,
+      closes: entry.closes,
+    })),
+  sameAs: Object.values(siteConfig.socials).filter(Boolean),
+  foundingDate: String(siteConfig.foundedYear),
+};
+
+const extraJsonLd = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<meta property="og:type" content={type} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:site_name" content={siteConfig.company} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:locale" content={siteConfig.seo.locale.replace('-', '_')} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+{siteConfig.seo.twitterHandle && <meta name="twitter:site" content={siteConfig.seo.twitterHandle} />}
+
+<script type="application/ld+json" set:html={JSON.stringify(localBusinessJsonLd)} />
+{
+  extraJsonLd.map((block) => (
+    <script type="application/ld+json" set:html={JSON.stringify(block)} />
+  ))
+}

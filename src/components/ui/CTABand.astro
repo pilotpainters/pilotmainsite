@@ -1,0 +1,75 @@
+---
+/**
+ * Full-width CTA band — headline, subheading, primary CTA (accent), optional phone secondary.
+ * Copy comes from content; phone display uses `siteConfig` for the number and tel: link.
+ *
+ * Props:
+ * - `tone`: `primary` (primary blue bg) | `dark` (brand-black bg). Text is tuned for WCAG contrast.
+ * - `headline`, `subheading`: strings from frontmatter
+ * - `primaryCta`: `{ label, href }`
+ * - `callCtaLabel`: label prefix before the phone (e.g. "Call us") — full line is label + site phone
+ */
+import Section from './Section.astro';
+import Container from '../layout/Container.astro';
+import Button from './Button.astro';
+import { Icon } from 'astro-icon/components';
+import { siteConfig } from '@config/site.config';
+import { withBase } from '@/lib/url';
+
+interface Props {
+  id?: string;
+  tone: 'primary' | 'dark';
+  headline: string;
+  subheading: string;
+  primaryCta: { label: string; href: string };
+  callCtaLabel: string;
+  ariaLabelledby?: string;
+}
+
+const {
+  id = 'cta',
+  tone,
+  headline,
+  subheading,
+  primaryCta,
+  callCtaLabel,
+  ariaLabelledby = 'ctaHeading',
+} = Astro.props;
+
+const sectionTone = tone === 'primary' ? 'primary' : 'dark';
+---
+
+<Section
+  id={id}
+  tone={sectionTone}
+  spacing="md"
+  containerSize={null}
+  class="text-brand-white"
+  labelledby={ariaLabelledby}
+>
+  <Container size="lg">
+    <div class="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
+      <div>
+        <h2 id={ariaLabelledby} class="text-h2 text-brand-white">
+          {headline}
+        </h2>
+        <p class="mt-4 text-body text-neutral-100/90">{subheading}</p>
+      </div>
+      <div class="flex flex-col gap-3 sm:flex-row md:justify-end">
+        <Button href={withBase(primaryCta.href)} variant="accent" size="lg">
+          {primaryCta.label}
+        </Button>
+        <Button
+          href={`tel:${siteConfig.phoneTel}`}
+          variant={tone === 'primary' ? 'outlineOnPrimary' : 'outlineOnDark'}
+          size="lg"
+        >
+          <span class="inline-flex items-center gap-2">
+            <Icon name="lucide:phone" class="h-5 w-5" aria-hidden="true" />
+            {callCtaLabel}: {siteConfig.phone}
+          </span>
+        </Button>
+      </div>
+    </div>
+  </Container>
+</Section>

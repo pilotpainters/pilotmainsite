@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-label="Project Image">
+  <rect width="640" height="360" fill="#0A0A0A"/>
+  <g fill="#0BA5EC" opacity="0.95">
+    <rect x="120" y="92" width="400" height="216" rx="18" opacity="0.18"/>
+    <path d="M210 254h220v20H210z" opacity="0.75"/>
+    <path d="M230 138h180v14H230z" opacity="0.85"/>
+    <path d="M230 162h120v12H230z" opacity="0.65"/>
+    <path d="M430 140v84h-54l-14-20-18 24-20-28-28 36h134v-96Z" opacity="0.45"/>
+  </g>
+  <text x="320" y="320" text-anchor="middle" font-family="Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif" font-size="18" fill="#F8FAFC" opacity="0.9">Project Image</text>
+</svg>
+

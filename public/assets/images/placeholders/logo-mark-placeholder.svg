@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Logo mark placeholder">
+  <rect width="256" height="256" rx="32" fill="#0284C7"/>
+  <g fill="#FFFFFF" opacity="0.96">
+    <path d="M64 142c44-30 72-46 128-48-32 14-46 30-58 52 26-8 46-8 70-2-56 18-92 38-140 52l0-54Z" opacity="0.9"/>
+    <path d="M78 92h100v14H78z" opacity="0.7"/>
+  </g>
+  <path d="M44 188c52 0 94 8 168-18" stroke="#0BA5EC" stroke-width="10" opacity="0.9" fill="none" stroke-linecap="round"/>
+</svg>
+

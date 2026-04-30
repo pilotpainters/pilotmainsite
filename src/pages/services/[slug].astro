@@ -1,0 +1,181 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Container from '@/components/layout/Container.astro';
+import Card from '@/components/ui/Card.astro';
+import Button from '@/components/ui/Button.astro';
+import CTABand from '@/components/ui/CTABand.astro';
+import { Icon } from 'astro-icon/components';
+import { getCollection } from 'astro:content';
+import { withBase } from '@/lib/url';
+import { siteConfig } from '@config/site.config';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('services');
+  return entries
+    .filter((e) => !e.data.draft)
+    .map((entry) => ({
+      params: { slug: entry.data.slug },
+      props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+
+const gradientDirectionMap: Record<string, string> = {
+  t: 'bg-gradient-to-t',
+  tr: 'bg-gradient-to-tr',
+  r: 'bg-gradient-to-r',
+  br: 'bg-gradient-to-br',
+  b: 'bg-gradient-to-b',
+  bl: 'bg-gradient-to-bl',
+  l: 'bg-gradient-to-l',
+  tl: 'bg-gradient-to-tl',
+};
+
+const heroBgClasses = [
+  gradientDirectionMap.br,
+  'from-brand-black',
+  'to-primary-dark',
+  'relative',
+  'overflow-hidden',
+  'text-brand-white',
+];
+
+const title = data.seo.title ?? `${data.title} in Chicagoland`;
+const description =
+  data.seo.description ??
+  data.summary;
+
+const ogImage = data.seo.ogImage;
+
+const processSteps = [...data.process].sort((a, b) => a.step - b.step);
+
+const featuresHeading = data.featuresHeading ?? 'What is included';
+const processHeading =
+  data.processHeading ?? `How we approach ${data.title.toLowerCase()}`;
+
+const serviceJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: data.title,
+  description: data.summary,
+  provider: { '@id': `${siteConfig.seo.siteUrl}#business` },
+  areaServed: siteConfig.serviceAreas,
+  serviceType: data.title,
+  url: new URL(
+    withBase(`/services/${data.slug}/`),
+    siteConfig.seo.siteUrl,
+  ).href,
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={ogImage}
+  jsonLd={[serviceJsonLd]}
+>
+  <main class="flex-1">
+    <Section
+      id="service-hero"
+      tone="white"
+      spacing="lg"
+      containerSize={null}
+      class:list={[...heroBgClasses]}
+      labelledby="service-hero-heading"
+    >
+      <Container size="lg">
+        <div class="max-w-3xl">
+          {data.hero.eyebrow && (
+            <p class="text-caption uppercase tracking-wide text-primary-light">{data.hero.eyebrow}</p>
+          )}
+          <h1 id="service-hero-heading" class="mt-4 text-h1 text-brand-white">
+            {data.hero.headline}
+          </h1>
+          <p class="mt-6 text-body text-neutral-100/90">{data.hero.subheadline}</p>
+          <div class="mt-10">
+            <Button href={withBase(data.cta.buttonHref)} variant="accent" size="lg">
+              {data.cta.buttonLabel}
+            </Button>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    <Section
+      id="features"
+      tone="white"
+      spacing="md"
+      labelledby="features-heading"
+    >
+      <Container size="lg">
+        <h2 id="features-heading" class="text-h2 text-neutral-900">
+          {featuresHeading}
+        </h2>
+        <ul class="mt-10 grid list-none gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {data.features.map((feature) => (
+            <li>
+              <Card variant="outlined" padding="md" class="h-full">
+                <div class="flex items-start gap-4">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-dark text-brand-white">
+                    <Icon name={`lucide:${feature.icon}`} class="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 class="text-h3 text-neutral-900">{feature.title}</h3>
+                    <p class="mt-2 text-body text-neutral-700">{feature.description}</p>
+                  </div>
+                </div>
+              </Card>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </Section>
+
+    <Section
+      id="process"
+      tone="neutral"
+      spacing="md"
+      labelledby="process-heading"
+    >
+      <Container size="lg">
+        <h2 id="process-heading" class="text-h2 text-neutral-900">
+          {processHeading}
+        </h2>
+        <ol class="mt-10 grid list-none gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {processSteps.map((step, idx) => (
+            <li>
+              <Card variant="outlined" padding="md" class="relative h-full">
+                {idx < processSteps.length - 1 && (
+                  <div
+                    class="absolute right-0 top-7 hidden h-px w-8 translate-x-1/2 bg-neutral-300 lg:block"
+                    aria-hidden="true"
+                  />
+                )}
+                <div class="flex flex-col gap-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-dark text-brand-white">
+                    <span class="text-small">{step.step}</span>
+                  </div>
+                  <h3 class="text-h6 text-neutral-900">{step.title}</h3>
+                  <p class="text-small text-neutral-700">{step.description}</p>
+                </div>
+              </Card>
+            </li>
+          ))}
+        </ol>
+      </Container>
+    </Section>
+
+    <CTABand
+      id="cta"
+      tone="dark"
+      headline={data.cta.headline}
+      subheading={data.cta.subheading}
+      primaryCta={{ label: data.cta.buttonLabel, href: data.cta.buttonHref }}
+      callCtaLabel={data.cta.callCtaLabel}
+      ariaLabelledby="service-cta-heading"
+    />
+  </main>
+</BaseLayout>

@@ -1,0 +1,15 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@config/*": ["config/*"],
+      "@content/*": ["content/*"]
+    },
+    "jsx": "preserve",
+    "verbatimModuleSyntax": false
+  },
+  "include": [".astro/types.d.ts", "src/**/*", "config/**/*", "tailwind.config.ts"],
+  "exclude": ["dist", "node_modules"]
+}

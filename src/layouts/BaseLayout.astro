@@ -1,0 +1,49 @@
+---
+import '@/styles/global.css';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import SEOHead from '@/components/seo/SEOHead.astro';
+import { siteConfig } from '@config/site.config';
+import { withBase } from '@/lib/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
+}
+
+const { title, description, image, canonical, type, noindex, jsonLd } = Astro.props;
+
+const faviconHref = withBase('/assets/logos/pilot-painters-logo.png');
+---
+
+<!doctype html>
+<html lang={siteConfig.seo.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/png" href={faviconHref} />
+
+    <SEOHead
+      title={title}
+      description={description}
+      image={image}
+      canonical={canonical}
+      type={type}
+      noindex={noindex}
+      jsonLd={jsonLd}
+    />
+
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <Header />
+    <slot />
+    <Footer />
+  </body>
+</html>

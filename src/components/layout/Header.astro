@@ -1,0 +1,95 @@
+---
+/**
+ * Primary site header. Desktop (`md+`): “Services” shows a CSS-only hover/focus-within
+ * submenu (zero client JS). Mobile: single “Services” link to `/services/` — full list
+ * lives on the services index page.
+ */
+import Container from './Container.astro';
+import Button from '../ui/Button.astro';
+import { Icon } from 'astro-icon/components';
+import { siteConfig } from '@config/site.config';
+import { navigation } from '@config/navigation.config';
+import { withBase } from '@/lib/url';
+import { getCollection } from 'astro:content';
+
+const logoSrc = withBase('/assets/logos/pilot-painters-logo.png');
+const homeHref = withBase('/');
+const cta = navigation.ctaButtons.primary;
+
+const serviceEntries = (await getCollection('services'))
+  .filter((s) => !s.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<header class="border-b border-neutral-100 bg-brand-white">
+  <Container size="lg" class="flex items-center justify-between py-4">
+    <a href={homeHref} class="flex items-center gap-3" aria-label={`${siteConfig.company} — home`}>
+      <img
+        src={logoSrc}
+        alt={`${siteConfig.company} logo`}
+        width="200"
+        height="48"
+        class="h-10 w-auto"
+        loading="eager"
+        decoding="async"
+      />
+    </a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-6 md:flex">
+      <ul class="flex list-none items-center gap-6">
+        {
+          navigation.headerNav.map((item) =>
+            item.label === 'Services' && item.href === '/services/' ? (
+              <li class="relative">
+                <div class="group relative">
+                  <a
+                    href={withBase('/services/')}
+                    class="inline-flex items-center gap-1 text-body text-neutral-700 hover:text-primary"
+                  >
+                    {item.label}
+                    <Icon name="lucide:chevron-down" class="h-4 w-4" aria-hidden="true" />
+                  </a>
+                  <ul
+                    role="menu"
+                    class="invisible absolute left-0 top-full z-40 mt-0 min-w-[14rem] list-none rounded-md border border-neutral-200 bg-brand-white py-2 opacity-0 shadow-md transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+                  >
+                    {serviceEntries.map((svc) => (
+                      <li role="none">
+                        <a
+                          role="menuitem"
+                          href={withBase(`/services/${svc.data.slug}/`)}
+                          class="block px-4 py-2 text-body text-neutral-700 hover:bg-neutral-50 hover:text-primary focus-visible:bg-neutral-50 focus-visible:outline-none"
+                        >
+                          {svc.data.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ) : (
+              <li>
+                <a
+                  href={withBase(item.href)}
+                  class="text-body text-neutral-700 hover:text-primary"
+                  target={item.external ? '_blank' : undefined}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+    </nav>
+
+    <div class="hidden md:block">
+      <Button href={withBase(cta.href)} variant="primary" size="md">{cta.label}</Button>
+    </div>
+
+    <div class="md:hidden">
+      <Button href={withBase(cta.href)} variant="primary" size="sm">{cta.label}</Button>
+    </div>
+  </Container>
+</header>

@@ -1,0 +1,22 @@
+---
+interface Props {
+  /** HTML element to render. Defaults to <div>. */
+  as?: keyof HTMLElementTagNameMap;
+  /** Constrain max width — `default` works for most marketing layouts. */
+  size?: 'sm' | 'default' | 'lg' | 'full';
+  class?: string;
+}
+
+const { as: Tag = 'div', size = 'default', class: className = '' } = Astro.props;
+
+const sizeClass: Record<NonNullable<Props['size']>, string> = {
+  sm: 'max-w-3xl',
+  default: 'max-w-6xl',
+  lg: 'max-w-7xl',
+  full: 'max-w-none',
+};
+---
+
+<Tag class:list={['mx-auto w-full px-4 md:px-8', sizeClass[size], className]}>
+  <slot />
+</Tag>

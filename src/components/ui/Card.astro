@@ -1,0 +1,28 @@
+---
+interface Props {
+  /** Visual elevation. */
+  variant?: 'flat' | 'outlined' | 'elevated';
+  /** Padding scale. */
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { variant = 'outlined', padding = 'md', class: className = '' } = Astro.props;
+
+const variants = {
+  flat: 'bg-neutral-50',
+  outlined: 'bg-brand-white border border-neutral-300',
+  elevated: 'bg-brand-white shadow-md',
+} as const;
+
+const paddings = {
+  none: '',
+  sm: 'p-3',
+  md: 'p-6',
+  lg: 'p-8',
+} as const;
+---
+
+<div class:list={['rounded-lg', variants[variant], paddings[padding], className]}>
+  <slot />
+</div>
