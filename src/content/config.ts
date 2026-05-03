@@ -58,24 +58,50 @@ const services = defineCollection({
     }),
 });
 
+const serviceTypeEnum = z.enum([
+  'interior-painting',
+  'exterior-painting',
+  'cabinet-refinishing',
+  'commercial-painting',
+]);
+
+const galleryImageSchema = z.object({
+  src: z.string(),
+  alt: z.string(),
+  caption: z.string().optional(),
+});
+
+const projectInfoSchema = z.object({
+  scope: z.string(),
+  duration: z.string().optional(),
+  squareFootage: z.string().optional(),
+  colors: z.array(z.string()).optional(),
+});
+
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './content/projects' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      location: z.string(),
-      projectType: z.string(),
-      description: z.string(),
-      beforeImage: image().optional(),
-      afterImage: image().optional(),
-      beforeImagePath: z.string().optional(),
-      afterImagePath: z.string().optional(),
-      /** Teaser image for cards/grids (falls back to before/after/placeholder). */
-      imagePath: z.string().optional(),
-      completedAt: z.coerce.date().optional(),
-      featured: z.boolean().default(false),
-      draft: z.boolean().default(false),
-    }),
+  schema: z.object({
+    title: z.string(),
+    slug: z.string(),
+    summary: z.string(),
+    location: z.string(),
+    serviceType: serviceTypeEnum,
+    completedDate: z.coerce.date(),
+    coverImage: z.string(),
+    gallery: z.array(galleryImageSchema).min(1).max(12),
+    info: projectInfoSchema,
+    featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
+    galleryHeading: z.string().optional(),
+    detailsHeading: z.string().optional(),
+    seo: z
+      .object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        ogImage: z.string().optional(),
+      })
+      .optional(),
+  }),
 });
 
 const testimonials = defineCollection({
@@ -206,6 +232,169 @@ const pages = defineCollection({
           primaryCta: z.object({ label: z.string(), href: z.string() }),
           callCtaLabel: z.string(),
         }),
+      })
+      .optional(),
+
+    /** Contact page (`content/pages/contact.md`). */
+    contact: z
+      .object({
+        seo: z.object({
+          title: z.string(),
+          description: z.string(),
+          ogImage: z.string().optional(),
+        }),
+        hero: z.object({
+          eyebrow: z.string().optional(),
+          headline: z.string(),
+          subheadline: z.string(),
+        }),
+        info: z.object({
+          heading: z.string(),
+          subheading: z.string(),
+          phoneLabel: z.string(),
+          emailLabel: z.string(),
+          responseNote: z.string(),
+        }),
+        form: z.object({
+          heading: z.string(),
+          subheading: z.string(),
+          submitLabel: z.string(),
+          successMessage: z.string(),
+          privacyNote: z.string().optional(),
+          fields: z.object({
+            name: z.object({
+              label: z.string(),
+              placeholder: z.string(),
+              required: z.boolean().default(true),
+            }),
+            email: z.object({
+              label: z.string(),
+              placeholder: z.string(),
+              required: z.boolean().default(true),
+            }),
+            phone: z.object({
+              label: z.string(),
+              placeholder: z.string(),
+              required: z.boolean().default(true),
+            }),
+            service: z.object({
+              label: z.string(),
+              placeholder: z.string(),
+              required: z.boolean().default(true),
+            }),
+            address: z.object({
+              label: z.string(),
+              placeholder: z.string(),
+              required: z.boolean().default(true),
+              helpText: z.string().optional(),
+            }),
+            message: z.object({
+              label: z.string(),
+              placeholder: z.string(),
+              required: z.boolean().default(true),
+              rows: z.number().int().min(2).max(20).default(5),
+            }),
+          }),
+        }),
+        cta: z
+          .object({
+            tone: z.enum(['primary', 'dark']).default('dark'),
+            heading: z.string(),
+            subheading: z.string(),
+            primaryCta: z.object({ label: z.string(), href: z.string() }),
+            callCtaLabel: z.string(),
+          })
+          .optional(),
+      })
+      .optional(),
+
+    /** About page (`content/pages/about.md`). */
+    about: z
+      .object({
+        seo: z.object({
+          title: z.string(),
+          description: z.string(),
+          ogImage: z.string().optional(),
+        }),
+        hero: z.object({
+          eyebrow: z.string().optional(),
+          headline: z.string(),
+          subheadline: z.string(),
+        }),
+        story: z.object({
+          heading: z.string(),
+          image: z.string().optional(),
+          imageAlt: z.string().default(''),
+        }),
+        valuesHeading: z.string().optional(),
+        values: z
+          .array(
+            z.object({
+              icon: z.string(),
+              title: z.string(),
+              description: z.string(),
+            }),
+          )
+          .min(3)
+          .max(6),
+        serviceArea: z.object({
+          heading: z.string(),
+          subheading: z.string(),
+          description: z.string(),
+          cities: z
+            .array(
+              z.object({
+                name: z.string(),
+                featured: z.boolean().default(false),
+              }),
+            )
+            .min(8),
+        }),
+        cta: z.object({
+          headline: z.string(),
+          subheading: z.string(),
+          buttonLabel: z.string(),
+          buttonHref: z.string().default('/contact/'),
+          callCtaLabel: z.string().default('Call us'),
+        }),
+      })
+      .optional(),
+
+    /** Projects index page (`content/pages/projects.md`). */
+    projectsIndex: z
+      .object({
+        seo: z.object({
+          title: z.string(),
+          description: z.string(),
+          image: z.string().optional(),
+          canonical: z.string().optional(),
+        }),
+        hero: z.object({
+          heading: z.string(),
+          lead: z.string(),
+        }),
+        intro: z
+          .object({
+            lead: z.string(),
+          })
+          .optional(),
+        ctaBand: z.object({
+          tone: z.enum(['primary', 'dark']).default('dark'),
+          heading: z.string(),
+          subheading: z.string(),
+          primaryCta: z.object({ label: z.string(), href: z.string() }),
+          callCtaLabel: z.string(),
+        }),
+        /** Shared CTA copy reused across all project detail pages. */
+        detailCtaBand: z
+          .object({
+            tone: z.enum(['primary', 'dark']).default('dark'),
+            heading: z.string(),
+            subheading: z.string(),
+            primaryCta: z.object({ label: z.string(), href: z.string() }),
+            callCtaLabel: z.string(),
+          })
+          .optional(),
       })
       .optional(),
 

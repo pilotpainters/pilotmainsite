@@ -1,0 +1,257 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Container from '@/components/layout/Container.astro';
+import Card from '@/components/ui/Card.astro';
+import Button from '@/components/ui/Button.astro';
+import CTABand from '@/components/ui/CTABand.astro';
+import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
+import { getEntry, getCollection, render } from 'astro:content';
+import { withBase } from '@/lib/url';
+import { resolvePublicImage } from '@/lib/images';
+import { formatDate } from '@/lib/dates';
+import { siteConfig } from '@config/site.config';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('projects');
+  return entries
+    .filter((e) => !e.data.draft)
+    .map((entry) => ({
+      params: { slug: entry.data.slug },
+      props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+const { Content } = await render(entry);
+
+const pageEntry = await getEntry('pages', 'projects');
+const detailCta = pageEntry?.data.projectsIndex?.detailCtaBand;
+
+const serviceTypeMeta: Record<string, { label: string; icon: string }> = {
+  'interior-painting': { label: 'Interior Painting', icon: 'home' },
+  'exterior-painting': { label: 'Exterior Painting', icon: 'building' },
+  'cabinet-refinishing': { label: 'Cabinet Refinishing', icon: 'paint-bucket' },
+  'commercial-painting': { label: 'Commercial Painting', icon: 'shield-check' },
+};
+
+const meta = serviceTypeMeta[data.serviceType];
+
+const title = data.seo?.title ?? `${data.title}`;
+const description = data.seo?.description ?? data.summary;
+const ogImage = data.seo?.ogImage ?? data.coverImage;
+
+const galleryHeading = data.galleryHeading ?? 'Project Gallery';
+const detailsHeading = data.detailsHeading ?? 'Project Details';
+
+const projectUrl = new URL(
+  withBase(`/projects/${data.slug}/`),
+  siteConfig.seo.siteUrl,
+).href;
+
+const galleryImages = data.gallery.map((img) => ({
+  ...img,
+  resolved: resolvePublicImage(img.src, 'project'),
+}));
+
+const projectJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: data.title,
+  description: data.summary,
+  url: projectUrl,
+  image: [
+    new URL(withBase(resolvePublicImage(data.coverImage, 'project')), siteConfig.seo.siteUrl).href,
+    ...galleryImages.map(
+      (img) => new URL(withBase(img.resolved), siteConfig.seo.siteUrl).href,
+    ),
+  ],
+  creator: { '@id': `${siteConfig.seo.siteUrl}#business` },
+  locationCreated: {
+    '@type': 'Place',
+    name: data.location,
+  },
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={ogImage}
+  jsonLd={[projectJsonLd]}
+>
+  <main class="flex-1">
+    {/* Hero */}
+    <Section
+      id="project-hero"
+      tone="white"
+      spacing="lg"
+      containerSize={null}
+      class="bg-gradient-to-br from-brand-black to-primary-dark relative overflow-hidden text-brand-white"
+      labelledby="project-hero-heading"
+    >
+      <Container size="lg">
+        <div class="max-w-3xl">
+          {meta && (
+            <p class="text-caption uppercase tracking-wide text-primary-light">{meta.label}</p>
+          )}
+          <h1 id="project-hero-heading" class="mt-4 text-h1 text-brand-white">
+            {data.title}
+          </h1>
+          <p class="mt-6 text-body text-neutral-100/90">
+            {data.location} · Completed {formatDate(data.completedDate)}
+          </p>
+          <div class="mt-10">
+            <Button href={withBase('/contact/')} variant="accent" size="lg">
+              Start Your Project
+            </Button>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    {/* Image Gallery */}
+    <Section id="gallery" tone="white" spacing="md" labelledby="gallery-heading">
+      <Container size="lg">
+        <h2 id="gallery-heading" class="text-h2 text-neutral-900">{galleryHeading}</h2>
+        {/* Future enhancement: add lightbox/modal for full-size image viewing. */}
+        <ul class="mt-10 grid list-none gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {galleryImages.map((img, idx) => {
+            const isFeature = idx === 0;
+            return (
+              <li class:list={[isFeature && 'md:col-span-2 md:row-span-2']}>
+                <figure class="overflow-hidden rounded-lg bg-neutral-50">
+                  <Image
+                    src={withBase(img.resolved)}
+                    alt={img.alt}
+                    width={isFeature ? 960 : 480}
+                    height={isFeature ? 640 : 320}
+                    class="aspect-[3/2] h-full w-full object-cover"
+                    loading={isFeature ? 'eager' : 'lazy'}
+                  />
+                  {img.caption && (
+                    <figcaption class="px-3 py-2 text-small text-neutral-500">
+                      {img.caption}
+                    </figcaption>
+                  )}
+                </figure>
+              </li>
+            );
+          })}
+        </ul>
+      </Container>
+    </Section>
+
+    {/* Project Info */}
+    <Section id="details" tone="neutral" spacing="md" labelledby="details-heading">
+      <Container size="lg">
+        <h2 id="details-heading" class="text-h2 text-neutral-900">{detailsHeading}</h2>
+        <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_24rem]">
+          <div class="prose prose-neutral max-w-none text-body text-neutral-700">
+            <Content />
+          </div>
+
+          <aside>
+            <Card variant="outlined" padding="lg" class="sticky top-8 bg-brand-white">
+              <dl class="space-y-6">
+                {meta && (
+                  <div>
+                    <dt class="flex items-center gap-2 text-caption uppercase tracking-wide text-neutral-500">
+                      <Icon name={`lucide:${meta.icon}`} class="h-4 w-4" aria-hidden="true" />
+                      Service
+                    </dt>
+                    <dd class="mt-1 text-body text-neutral-900">
+                      <a
+                        href={withBase(`/services/${data.serviceType}/`)}
+                        class="text-primary underline underline-offset-4 hover:text-primary-dark"
+                      >
+                        {meta.label}
+                      </a>
+                    </dd>
+                  </div>
+                )}
+
+                <div>
+                  <dt class="flex items-center gap-2 text-caption uppercase tracking-wide text-neutral-500">
+                    <Icon name="lucide:clipboard-check" class="h-4 w-4" aria-hidden="true" />
+                    Scope
+                  </dt>
+                  <dd class="mt-1 text-body text-neutral-900">{data.info.scope}</dd>
+                </div>
+
+                {data.info.duration && (
+                  <div>
+                    <dt class="flex items-center gap-2 text-caption uppercase tracking-wide text-neutral-500">
+                      <Icon name="lucide:clock" class="h-4 w-4" aria-hidden="true" />
+                      Duration
+                    </dt>
+                    <dd class="mt-1 text-body text-neutral-900">{data.info.duration}</dd>
+                  </div>
+                )}
+
+                {data.info.squareFootage && (
+                  <div>
+                    <dt class="flex items-center gap-2 text-caption uppercase tracking-wide text-neutral-500">
+                      <Icon name="lucide:layers" class="h-4 w-4" aria-hidden="true" />
+                      Square Footage
+                    </dt>
+                    <dd class="mt-1 text-body text-neutral-900">{data.info.squareFootage}</dd>
+                  </div>
+                )}
+
+                {data.info.colors && data.info.colors.length > 0 && (
+                  <div>
+                    <dt class="flex items-center gap-2 text-caption uppercase tracking-wide text-neutral-500">
+                      <Icon name="lucide:palette" class="h-4 w-4" aria-hidden="true" />
+                      Colors
+                    </dt>
+                    <dd class="mt-1">
+                      <ul class="list-none space-y-1 text-body text-neutral-900">
+                        {data.info.colors.map((color) => (
+                          <li>{color}</li>
+                        ))}
+                      </ul>
+                    </dd>
+                  </div>
+                )}
+
+                <div>
+                  <dt class="flex items-center gap-2 text-caption uppercase tracking-wide text-neutral-500">
+                    <Icon name="lucide:map-pin" class="h-4 w-4" aria-hidden="true" />
+                    Location
+                  </dt>
+                  <dd class="mt-1 text-body text-neutral-900">{data.location}</dd>
+                </div>
+
+                <div>
+                  <dt class="flex items-center gap-2 text-caption uppercase tracking-wide text-neutral-500">
+                    <Icon name="lucide:calendar-check" class="h-4 w-4" aria-hidden="true" />
+                    Completed
+                  </dt>
+                  <dd class="mt-1 text-body text-neutral-900">
+                    <time datetime={data.completedDate.toISOString().slice(0, 10)}>
+                      {formatDate(data.completedDate)}
+                    </time>
+                  </dd>
+                </div>
+              </dl>
+            </Card>
+          </aside>
+        </div>
+      </Container>
+    </Section>
+
+    {/* CTA Band */}
+    <CTABand
+      id="cta"
+      tone={detailCta?.tone ?? 'dark'}
+      headline={detailCta?.heading ?? 'Inspired by this project?'}
+      subheading={detailCta?.subheading ?? "Let's create something beautiful for your space."}
+      primaryCta={detailCta?.primaryCta ?? { label: 'Start Your Project', href: '/contact/' }}
+      callCtaLabel={detailCta?.callCtaLabel ?? 'Call us'}
+      ariaLabelledby="project-cta-heading"
+    />
+  </main>
+</BaseLayout>

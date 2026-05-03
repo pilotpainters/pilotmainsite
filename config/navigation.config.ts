@@ -36,7 +36,7 @@ export const navigation: NavigationConfig = {
   headerNav: [
     { label: 'Home', href: '/' },
     { label: 'Services', href: '/services/' },
-    { label: 'Gallery', href: '/gallery/' },
+    { label: 'Projects', href: '/projects/' },
     { label: 'About', href: '/about/' },
     { label: 'Contact', href: '/contact/' },
   ],
@@ -52,7 +52,7 @@ export const navigation: NavigationConfig = {
       links: [
         { label: 'About', href: '/about/' },
         { label: 'Our Process', href: '/process/' },
-        { label: 'Gallery', href: '/gallery/' },
+        { label: 'Projects', href: '/projects/' },
       ],
     },
     {
@@ -66,6 +66,6 @@ export const navigation: NavigationConfig = {
 
   ctaButtons: {
     primary: { label: 'Get a Free Quote', href: '/contact/' },
-    secondary: { label: 'See Our Work', href: '/gallery/' },
+    secondary: { label: 'See Our Work', href: '/projects/' },
   },
 };

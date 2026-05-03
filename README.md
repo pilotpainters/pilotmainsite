@@ -175,4 +175,10 @@ In GitHub repo settings → **Pages**, set the source to **Deploy from a branch 
   - Set a real `seo.siteUrl` matching your deployed URL.
   - Replace `seo.defaultOgImage` with a dedicated Open Graph image (logo is a temporary fallback).
 - Add real photos under `public/assets/images/` matching the paths in `/content` frontmatter.
+- Wire up the contact form handler:
+  - In [`src/pages/contact.astro`](src/pages/contact.astro), search for `REPLACE_WITH_FORM_HANDLER_URL` in the `<form action="...">` attribute.
+  - Replace it with the endpoint URL from your chosen form service (e.g. [Formspree](https://formspree.io) or [Web3Forms](https://web3forms.com)).
+  - For Web3Forms, also add a hidden `<input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">` inside the form.
+  - Test end-to-end submission before deploying.
+  - Build a success-state redirect page or thank-you message (not yet implemented).
 - Validate Lighthouse + accessibility in Chrome DevTools.

@@ -1,0 +1,165 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Container from '@/components/layout/Container.astro';
+import Card from '@/components/ui/Card.astro';
+import CTABand from '@/components/ui/CTABand.astro';
+import ServiceAreaMap from '@/components/ui/ServiceAreaMap.astro';
+import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
+import { getEntry, render } from 'astro:content';
+import { withBase } from '@/lib/url';
+import { resolvePublicImage } from '@/lib/images';
+import { siteConfig } from '@config/site.config';
+
+const pageEntry = await getEntry('pages', 'about');
+if (!pageEntry?.data.about) {
+  throw new Error('Missing content entry: content/pages/about.md with about frontmatter.');
+}
+const about = pageEntry.data.about;
+const { Content } = await render(pageEntry);
+
+const storyImageSrc = resolvePublicImage(about.story.image, 'project');
+
+const valuesHeading = about.valuesHeading ?? 'What we stand for';
+
+const aboutPageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: about.seo.title,
+  description: about.seo.description,
+  url: new URL(withBase('/about/'), siteConfig.seo.siteUrl).href,
+  mainEntity: { '@id': `${siteConfig.seo.siteUrl}#business` },
+};
+---
+
+<BaseLayout
+  title={about.seo.title}
+  description={about.seo.description}
+  image={about.seo.ogImage}
+  jsonLd={[aboutPageJsonLd]}
+>
+  <main class="flex-1">
+    {/* Hero */}
+    <Section
+      id="about-hero"
+      tone="white"
+      spacing="lg"
+      containerSize={null}
+      class="bg-gradient-to-br from-brand-black to-primary-dark relative overflow-hidden text-brand-white"
+      labelledby="about-hero-heading"
+    >
+      <Container size="lg">
+        <div class="max-w-3xl">
+          {about.hero.eyebrow && (
+            <p class="text-caption uppercase tracking-wide text-primary-light">{about.hero.eyebrow}</p>
+          )}
+          <h1 id="about-hero-heading" class="mt-4 text-h1 text-brand-white">
+            {about.hero.headline}
+          </h1>
+          <p class="mt-6 text-body text-neutral-100/90">{about.hero.subheadline}</p>
+        </div>
+      </Container>
+    </Section>
+
+    {/* Story */}
+    <Section id="story" tone="white" spacing="md" labelledby="story-heading">
+      <Container size="lg">
+        <h2 id="story-heading" class="text-h2 text-neutral-900">{about.story.heading}</h2>
+        <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_20rem] lg:items-start">
+          <div class="prose prose-neutral max-w-none text-body text-neutral-700">
+            <Content />
+          </div>
+          <div class="mx-auto w-full max-w-xs lg:max-w-none">
+            <Image
+              src={withBase(storyImageSrc)}
+              alt={about.story.imageAlt}
+              width={480}
+              height={480}
+              class="aspect-square w-full rounded-lg bg-neutral-50 object-cover shadow-md"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    {/* Values */}
+    <Section id="values" tone="neutral" spacing="md" labelledby="values-heading">
+      <Container size="lg">
+        <h2 id="values-heading" class="text-h2 text-neutral-900">{valuesHeading}</h2>
+        <ul class="mt-10 grid list-none gap-6 md:grid-cols-2">
+          {about.values.map((value) => (
+            <li>
+              <Card variant="outlined" padding="md" class="h-full bg-brand-white">
+                <div class="flex items-start gap-4">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-brand-white">
+                    <Icon name={`lucide:${value.icon}`} class="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 class="text-h3 text-neutral-900">{value.title}</h3>
+                    <p class="mt-2 text-body text-neutral-700">{value.description}</p>
+                  </div>
+                </div>
+              </Card>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </Section>
+
+    {/* Service Area */}
+    <Section id="service-area" tone="white" spacing="md" labelledby="service-area-heading">
+      <Container size="lg">
+        <div class="max-w-2xl">
+          <h2 id="service-area-heading" class="text-h2 text-neutral-900">{about.serviceArea.heading}</h2>
+          <p class="mt-2 text-h5 text-neutral-500">{about.serviceArea.subheading}</p>
+          <p class="mt-6 text-body text-neutral-700">{about.serviceArea.description}</p>
+        </div>
+
+        <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-start">
+          <div>
+            <ServiceAreaMap cities={about.serviceArea.cities} />
+          </div>
+          <div>
+            <ul class="grid list-none grid-cols-2 gap-3">
+              {about.serviceArea.cities.map((city) => (
+                <li>
+                  <span
+                    class:list={[
+                      'inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-small',
+                      city.featured
+                        ? 'bg-primary-dark text-brand-white'
+                        : 'bg-neutral-100 text-neutral-700',
+                    ]}
+                  >
+                    <Icon
+                      name="lucide:map-pin"
+                      class:list={[
+                        'h-4 w-4 shrink-0',
+                        city.featured ? 'text-primary-light' : 'text-neutral-500',
+                      ]}
+                      aria-hidden="true"
+                    />
+                    {city.name}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    {/* CTA Band */}
+    <CTABand
+      id="cta"
+      tone="dark"
+      headline={about.cta.headline}
+      subheading={about.cta.subheading}
+      primaryCta={{ label: about.cta.buttonLabel, href: about.cta.buttonHref }}
+      callCtaLabel={about.cta.callCtaLabel}
+      ariaLabelledby="about-cta-heading"
+    />
+  </main>
+</BaseLayout>

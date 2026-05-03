@@ -29,6 +29,13 @@ const projects = (await getCollection('projects')).filter((p) => !p.data.draft);
 const featuredProjects = projects.filter((p) => p.data.featured).slice(0, 3);
 const projectsToShow = (featuredProjects.length >= 3 ? featuredProjects : projects.slice(0, 3)).slice(0, 3);
 
+const serviceTypeLabels: Record<string, string> = {
+  'interior-painting': 'Interior Painting',
+  'exterior-painting': 'Exterior Painting',
+  'cabinet-refinishing': 'Cabinet Refinishing',
+  'commercial-painting': 'Commercial Painting',
+};
+
 const testimonials = (await getCollection('testimonials')).filter((t) => !t.data.draft);
 const featuredTestimonial = testimonials.find((t) => t.data.featured) ?? testimonials[0];
 
@@ -312,35 +319,36 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
 
         <div class="mt-10 grid gap-6 md:grid-cols-3">
           {projectsToShow.map((project) => {
-            const imageSrc = resolvePublicImage(
-              project.data.imagePath ?? project.data.afterImagePath ?? project.data.beforeImagePath,
-              'project',
-            );
+            const imageSrc = resolvePublicImage(project.data.coverImage, 'project');
+            const typeLabel = serviceTypeLabels[project.data.serviceType] ?? project.data.serviceType;
+            const href = withBase(`/projects/${project.data.slug}/`);
             return (
-              <Card variant="outlined" padding="none" class="overflow-hidden">
-                <div class="aspect-[16/9] bg-neutral-50">
-                  <Image
-                    src={withBase(imageSrc)}
-                    alt=""
-                    width={640}
-                    height={360}
-                    class="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <div class="p-6">
-                  <p class="text-h6 text-neutral-900">{project.data.title}</p>
-                  <div class="mt-3 flex flex-wrap items-center gap-3 text-small text-neutral-700">
-                    <span class="inline-flex items-center gap-2">
-                      <Icon name="lucide:map-pin" class="h-4 w-4 text-primary" aria-hidden="true" />
-                      {project.data.location}
-                    </span>
-                    <span class="inline-flex items-center rounded-full bg-neutral-50 px-3 py-1 text-caption text-neutral-700">
-                      {home.featuredProjects.typeTagLabel}: {project.data.projectType}
-                    </span>
+              <a href={href} class="group block focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
+                <Card variant="outlined" padding="none" class="h-full overflow-hidden">
+                  <div class="aspect-[16/9] bg-neutral-50">
+                    <Image
+                      src={withBase(imageSrc)}
+                      alt=""
+                      width={640}
+                      height={360}
+                      class="h-full w-full object-cover"
+                      loading="lazy"
+                    />
                   </div>
-                </div>
-              </Card>
+                  <div class="p-6">
+                    <p class="text-h6 text-neutral-900 group-hover:text-primary">{project.data.title}</p>
+                    <div class="mt-3 flex flex-wrap items-center gap-3 text-small text-neutral-700">
+                      <span class="inline-flex items-center gap-2">
+                        <Icon name="lucide:map-pin" class="h-4 w-4 text-primary" aria-hidden="true" />
+                        {project.data.location}
+                      </span>
+                      <span class="inline-flex items-center rounded-full bg-neutral-50 px-3 py-1 text-caption text-neutral-700">
+                        {home.featuredProjects.typeTagLabel}: {typeLabel}
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              </a>
             );
           })}
         </div>

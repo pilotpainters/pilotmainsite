@@ -1,0 +1,139 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Container from '@/components/layout/Container.astro';
+import Card from '@/components/ui/Card.astro';
+import CTABand from '@/components/ui/CTABand.astro';
+import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
+import { getEntry, getCollection } from 'astro:content';
+import { withBase } from '@/lib/url';
+import { resolvePublicImage } from '@/lib/images';
+import { formatDate } from '@/lib/dates';
+import { siteConfig } from '@config/site.config';
+
+const pageEntry = await getEntry('pages', 'projects');
+if (!pageEntry?.data.projectsIndex) {
+  throw new Error('Missing content entry: content/pages/projects.md with projectsIndex frontmatter.');
+}
+const pi = pageEntry.data.projectsIndex;
+
+const allProjects = (await getCollection('projects')).filter((p) => !p.data.draft);
+allProjects.sort((a, b) => b.data.completedDate.getTime() - a.data.completedDate.getTime());
+
+const serviceTypeMeta: Record<string, { label: string; icon: string }> = {
+  'interior-painting': { label: 'Interior Painting', icon: 'home' },
+  'exterior-painting': { label: 'Exterior Painting', icon: 'building' },
+  'cabinet-refinishing': { label: 'Cabinet Refinishing', icon: 'paint-bucket' },
+  'commercial-painting': { label: 'Commercial Painting', icon: 'shield-check' },
+};
+
+const projectsJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: `${siteConfig.company} Projects`,
+  numberOfItems: allProjects.length,
+  itemListElement: allProjects.map((p, idx) => ({
+    '@type': 'ListItem',
+    position: idx + 1,
+    item: {
+      '@type': 'CreativeWork',
+      name: p.data.title,
+      url: new URL(withBase(`/projects/${p.data.slug}/`), siteConfig.seo.siteUrl).href,
+      image: new URL(
+        withBase(resolvePublicImage(p.data.coverImage, 'project')),
+        siteConfig.seo.siteUrl,
+      ).href,
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title={pi.seo.title}
+  description={pi.seo.description}
+  image={pi.seo.image}
+  canonical={pi.seo.canonical}
+  jsonLd={[projectsJsonLd]}
+>
+  <main class="flex-1">
+    <Section id="page-header" tone="neutral" spacing="lg" labelledby="projects-page-heading">
+      <Container size="lg">
+        <h1 id="projects-page-heading" class="text-h1 text-neutral-900">
+          {pi.hero.heading}
+        </h1>
+        <p class="mt-6 max-w-3xl text-body text-neutral-700">{pi.hero.lead}</p>
+        {pi.intro?.lead && (
+          <p class="mt-4 max-w-3xl text-body text-neutral-700">{pi.intro.lead}</p>
+        )}
+      </Container>
+    </Section>
+
+    <Section id="projects-grid" tone="white" spacing="md" labelledby="projects-grid-heading">
+      <Container size="lg">
+        <h2 id="projects-grid-heading" class="sr-only">All projects</h2>
+        <ul class="grid list-none gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {allProjects.map((project) => {
+            const href = withBase(`/projects/${project.data.slug}/`);
+            const imageSrc = resolvePublicImage(project.data.coverImage, 'project');
+            const meta = serviceTypeMeta[project.data.serviceType];
+            return (
+              <li>
+                <a
+                  href={href}
+                  class="group block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-white"
+                >
+                  <article>
+                    <Card variant="outlined" padding="none" class="h-full overflow-hidden">
+                      <div class="aspect-[16/9] bg-neutral-50">
+                        <Image
+                          src={withBase(imageSrc)}
+                          alt=""
+                          width={640}
+                          height={360}
+                          class="h-full w-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div class="p-6">
+                        {meta && (
+                          <span class="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary-dark px-3 py-1 text-caption text-brand-white">
+                            <Icon name={`lucide:${meta.icon}`} class="h-3.5 w-3.5" aria-hidden="true" />
+                            {meta.label}
+                          </span>
+                        )}
+                        <h3 class="text-h3 text-neutral-900 group-hover:text-primary">{project.data.title}</h3>
+                        <div class="mt-3 flex flex-wrap items-center gap-4 text-small text-neutral-500">
+                          <span class="inline-flex items-center gap-1.5">
+                            <Icon name="lucide:map-pin" class="h-4 w-4" aria-hidden="true" />
+                            {project.data.location}
+                          </span>
+                          <span class="inline-flex items-center gap-1.5">
+                            <Icon name="lucide:calendar-check" class="h-4 w-4" aria-hidden="true" />
+                            <time datetime={project.data.completedDate.toISOString().slice(0, 10)}>
+                              {formatDate(project.data.completedDate)}
+                            </time>
+                          </span>
+                        </div>
+                      </div>
+                    </Card>
+                  </article>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </Container>
+    </Section>
+
+    <CTABand
+      id="cta"
+      tone={pi.ctaBand.tone}
+      headline={pi.ctaBand.heading}
+      subheading={pi.ctaBand.subheading}
+      primaryCta={pi.ctaBand.primaryCta}
+      callCtaLabel={pi.ctaBand.callCtaLabel}
+      ariaLabelledby="projects-cta-heading"
+    />
+  </main>
+</BaseLayout>
