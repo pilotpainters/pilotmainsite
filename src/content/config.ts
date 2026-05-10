@@ -111,7 +111,8 @@ const testimonials = defineCollection({
     location: z.string().optional(),
     rating: z.number().int().min(1).max(5),
     quote: z.string(),
-    project: z.string().optional(),
+    serviceType: serviceTypeEnum,
+    projectSlug: z.string().optional(),
     avatarPath: z.string().optional(),
     featured: z.boolean().default(false),
     date: z.coerce.date().optional(),
@@ -126,6 +127,84 @@ const pages = defineCollection({
     summary: z.string().optional(),
     updatedAt: z.coerce.date().optional(),
     draft: z.boolean().default(false),
+
+    /** Legal pages — shared structure for privacy, terms, cookies (`content/pages/{privacy,terms,cookies}.md`). */
+    legal: z
+      .object({
+        seo: z.object({
+          title: z.string(),
+          description: z.string(),
+          noindex: z.boolean().default(false),
+          ogImage: z.string().optional(),
+        }),
+        hero: z.object({
+          eyebrow: z.string().optional(),
+          headline: z.string(),
+          subheadline: z.string(),
+        }),
+        lastUpdated: z.coerce.date(),
+        effectiveDate: z.coerce.date(),
+        legalReviewBanner: z.object({
+          enabled: z.boolean().default(true),
+          message: z.string(),
+        }),
+        tableOfContents: z.object({
+          enabled: z.boolean().default(true),
+          heading: z.string().default('Contents'),
+        }),
+        sections: z
+          .array(
+            z.object({
+              id: z.string(),
+              heading: z.string(),
+              body: z.string(),
+            }),
+          )
+          .min(1),
+        crossLinks: z
+          .array(
+            z.object({
+              label: z.string(),
+              href: z.string(),
+            }),
+          )
+          .optional(),
+      })
+      .optional(),
+
+    /** Reviews page (`content/pages/reviews.md`). */
+    reviews: z
+      .object({
+        seo: z.object({
+          title: z.string(),
+          description: z.string(),
+          ogImage: z.string().optional(),
+        }),
+        hero: z.object({
+          eyebrow: z.string().optional(),
+          headline: z.string(),
+          subheadline: z.string(),
+        }),
+        aggregateRating: z.object({
+          heading: z.string(),
+          subheading: z.string(),
+          displayMode: z.enum(['auto', 'manual']).default('auto'),
+          manualRating: z.number().min(0).max(5).optional(),
+          manualReviewCount: z.number().int().nonnegative().optional(),
+        }),
+        filters: z.object({
+          heading: z.string(),
+          allLabel: z.string(),
+        }),
+        cta: z.object({
+          headline: z.string(),
+          subheading: z.string(),
+          buttonLabel: z.string(),
+          buttonHref: z.string().default('/contact/'),
+          callCtaLabel: z.string().default('Call us'),
+        }),
+      })
+      .optional(),
 
     /** Home page structured content (`content/pages/home.md`). */
     home: z

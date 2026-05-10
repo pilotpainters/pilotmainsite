@@ -32,6 +32,7 @@ export default defineConfig({
       include: {
         // Lucide icons used by home + seeded content. Keep this list tight for fast dev.
         lucide: [
+          'alert-triangle',
           'arrow-right',
           'badge-check',
           'brush',
@@ -60,6 +61,7 @@ export default defineConfig({
           'paintbrush',
           'palette',
           'phone',
+          'quote',
           'send',
           'shield',
           'shield-check',

@@ -1,0 +1,11 @@
+---
+import LegalPageLayout from '@/components/layout/LegalPageLayout.astro';
+import { getEntry } from 'astro:content';
+
+const pageEntry = await getEntry('pages', 'privacy');
+if (!pageEntry?.data.legal) {
+  throw new Error('Missing content entry: content/pages/privacy.md with legal frontmatter.');
+}
+---
+
+<LegalPageLayout legal={pageEntry.data.legal} />

@@ -37,6 +37,7 @@ export const navigation: NavigationConfig = {
     { label: 'Home', href: '/' },
     { label: 'Services', href: '/services/' },
     { label: 'Projects', href: '/projects/' },
+    { label: 'Reviews', href: '/reviews/' },
     { label: 'About', href: '/about/' },
     { label: 'Contact', href: '/contact/' },
   ],
@@ -53,6 +54,7 @@ export const navigation: NavigationConfig = {
         { label: 'About', href: '/about/' },
         { label: 'Our Process', href: '/process/' },
         { label: 'Projects', href: '/projects/' },
+        { label: 'Reviews', href: '/reviews/' },
       ],
     },
     {
@@ -60,6 +62,14 @@ export const navigation: NavigationConfig = {
       links: [
         { label: 'Request a Quote', href: '/contact/' },
         { label: 'Contact', href: '/contact/' },
+      ],
+    },
+    {
+      title: 'Legal',
+      links: [
+        { label: 'Privacy Policy', href: '/privacy/' },
+        { label: 'Terms of Service', href: '/terms/' },
+        { label: 'Cookie Policy', href: '/cookies/' },
       ],
     },
   ],

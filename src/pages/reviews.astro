@@ -1,0 +1,271 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Container from '@/components/layout/Container.astro';
+import Card from '@/components/ui/Card.astro';
+import CTABand from '@/components/ui/CTABand.astro';
+import StarRating from '@/components/ui/StarRating.astro';
+import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
+import { getEntry, getCollection } from 'astro:content';
+import { withBase } from '@/lib/url';
+import { resolvePublicImage } from '@/lib/images';
+import { siteConfig } from '@config/site.config';
+
+const pageEntry = await getEntry('pages', 'reviews');
+if (!pageEntry?.data.reviews) {
+  throw new Error('Missing content entry: content/pages/reviews.md with reviews frontmatter.');
+}
+const rv = pageEntry.data.reviews;
+
+const allTestimonials = (await getCollection('testimonials')).filter((t) => !t.data.draft);
+allTestimonials.sort((a, b) => {
+  if (b.data.rating !== a.data.rating) return b.data.rating - a.data.rating;
+  const dateA = a.data.date?.getTime() ?? 0;
+  const dateB = b.data.date?.getTime() ?? 0;
+  return dateB - dateA;
+});
+
+const allServices = (await getCollection('services'))
+  .filter((s) => !s.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const serviceTypeMeta: Record<string, { label: string; icon: string }> = {};
+for (const s of allServices) {
+  serviceTypeMeta[s.data.slug] = { label: s.data.title, icon: s.data.icon };
+}
+
+const computedAvg =
+  allTestimonials.length > 0
+    ? Math.round((allTestimonials.reduce((sum, t) => sum + t.data.rating, 0) / allTestimonials.length) * 10) / 10
+    : 0;
+const computedCount = allTestimonials.length;
+
+const avgRating =
+  rv.aggregateRating.displayMode === 'manual' && rv.aggregateRating.manualRating != null
+    ? rv.aggregateRating.manualRating
+    : computedAvg;
+const reviewCount =
+  rv.aggregateRating.displayMode === 'manual' && rv.aggregateRating.manualReviewCount != null
+    ? rv.aggregateRating.manualReviewCount
+    : computedCount;
+
+const reviewsJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${siteConfig.seo.siteUrl}#business`,
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: avgRating,
+    reviewCount: reviewCount,
+    bestRating: 5,
+    worstRating: 1,
+  },
+  review: allTestimonials.map((t) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: t.data.author },
+    reviewBody: t.data.quote,
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: t.data.rating,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    ...(t.data.date ? { datePublished: t.data.date.toISOString().slice(0, 10) } : {}),
+    itemReviewed: { '@id': `${siteConfig.seo.siteUrl}#business` },
+  })),
+};
+---
+
+<BaseLayout
+  title={rv.seo.title}
+  description={rv.seo.description}
+  image={rv.seo.ogImage}
+  jsonLd={[reviewsJsonLd]}
+>
+  <main class="flex-1">
+    {/* Hero */}
+    <Section
+      id="reviews-hero"
+      tone="white"
+      spacing="lg"
+      containerSize={null}
+      class="bg-gradient-to-br from-brand-black to-primary-dark relative overflow-hidden text-brand-white"
+      labelledby="reviews-hero-heading"
+    >
+      <Container size="lg">
+        <div class="max-w-3xl">
+          {rv.hero.eyebrow && (
+            <p class="text-caption uppercase tracking-wide text-primary-light">{rv.hero.eyebrow}</p>
+          )}
+          <h1 id="reviews-hero-heading" class="mt-4 text-h1 text-brand-white">
+            {rv.hero.headline}
+          </h1>
+          <p class="mt-6 text-body text-neutral-100/90">{rv.hero.subheadline}</p>
+        </div>
+      </Container>
+    </Section>
+
+    {/* Aggregate Rating */}
+    <Section id="aggregate" tone="white" spacing="md" labelledby="aggregate-heading">
+      <Container size="lg">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 id="aggregate-heading" class="text-h2 text-neutral-900">{rv.aggregateRating.heading}</h2>
+          <p class="mt-3 text-body text-neutral-700">{rv.aggregateRating.subheading}</p>
+          <div class="mt-8 flex flex-col items-center gap-3">
+            <span class="text-[4rem] font-bold leading-none text-primary">{avgRating}</span>
+            <StarRating rating={avgRating} size="lg" />
+            <p class="text-small text-neutral-500">Based on {reviewCount} verified reviews</p>
+          </div>
+        </div>
+      </Container>
+    </Section>
+
+    {/* Filter Bar + Testimonials Grid */}
+    <Section id="testimonials" tone="neutral" spacing="md" labelledby="filter-heading">
+      <Container size="lg">
+        <h2 id="filter-heading" class="text-small font-medium text-neutral-500">{rv.filters.heading}</h2>
+
+        <div class="mt-4 flex flex-wrap gap-2" role="radiogroup" aria-label={rv.filters.heading} id="filter-pills">
+          <button
+            type="button"
+            class="filter-pill active inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-small font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            data-filter="all"
+            aria-pressed="true"
+          >
+            {rv.filters.allLabel}
+          </button>
+          {allServices.map((s) => (
+            <button
+              type="button"
+              class="filter-pill inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-small font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              data-filter={s.data.slug}
+              aria-pressed="false"
+            >
+              <Icon name={`lucide:${s.data.icon}`} class="h-3.5 w-3.5" aria-hidden="true" />
+              {s.data.title}
+            </button>
+          ))}
+        </div>
+
+        <ul class="mt-10 grid list-none gap-6 md:grid-cols-2 lg:grid-cols-3" id="reviews-grid">
+          {allTestimonials.map((t) => {
+            const meta = serviceTypeMeta[t.data.serviceType];
+            const avatarSrc = resolvePublicImage(t.data.avatarPath, 'avatar');
+            return (
+              <li class="testimonial-card" data-service-type={t.data.serviceType}>
+                <article>
+                  <Card variant="outlined" padding="md" class="relative h-full bg-brand-white">
+                    <Icon
+                      name="lucide:quote"
+                      class="absolute right-4 top-4 h-8 w-8 text-neutral-300"
+                      aria-hidden="true"
+                    />
+
+                    <StarRating rating={t.data.rating} size="sm" />
+
+                    <blockquote class="mt-4 text-body italic text-neutral-700">
+                      "{t.data.quote}"
+                    </blockquote>
+
+                    <div class="mt-6 flex items-center gap-3">
+                      <Image
+                        src={withBase(avatarSrc)}
+                        alt=""
+                        width={48}
+                        height={48}
+                        class="h-12 w-12 rounded-full bg-neutral-50 object-cover"
+                        loading="lazy"
+                      />
+                      <div>
+                        <cite class="not-italic text-small font-semibold text-neutral-900">{t.data.author}</cite>
+                        {t.data.location && (
+                          <p class="text-caption text-neutral-500">{t.data.location}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div class="mt-4 flex flex-wrap items-center gap-2">
+                      {meta && (
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-caption text-neutral-700">
+                          <Icon name={`lucide:${meta.icon}`} class="h-3 w-3" aria-hidden="true" />
+                          {meta.label}
+                        </span>
+                      )}
+                      {t.data.projectSlug && (
+                        <a
+                          href={withBase(`/projects/${t.data.projectSlug}/`)}
+                          class="inline-flex items-center gap-1 text-caption text-primary hover:text-primary-dark"
+                        >
+                          View their project
+                          <Icon name="lucide:arrow-right" class="h-3 w-3" aria-hidden="true" />
+                        </a>
+                      )}
+                    </div>
+                  </Card>
+                </article>
+              </li>
+            );
+          })}
+        </ul>
+      </Container>
+    </Section>
+
+    {/* CTA Band */}
+    <CTABand
+      id="cta"
+      tone="dark"
+      headline={rv.cta.headline}
+      subheading={rv.cta.subheading}
+      primaryCta={{ label: rv.cta.buttonLabel, href: rv.cta.buttonHref }}
+      callCtaLabel={rv.cta.callCtaLabel}
+      ariaLabelledby="reviews-cta-heading"
+    />
+  </main>
+</BaseLayout>
+
+{/*
+  Filter implementation: vanilla JS (~15 lines) toggling visibility via
+  data-service-type attributes. CSS-only :has() was considered but the filter
+  controls and grid live in separate container scopes, making sibling-based
+  selectors impractical without restructuring the semantic layout.
+*/}
+<style>
+  .filter-pill {
+    border-color: theme('colors.neutral.300');
+    background-color: theme('colors.neutral.100');
+    color: theme('colors.neutral.700');
+  }
+  .filter-pill.active {
+    border-color: theme('colors.primary.dark');
+    background-color: theme('colors.primary.DEFAULT');
+    color: theme('colors.brand.white');
+  }
+  .testimonial-card.hidden-by-filter {
+    display: none;
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const pills = document.querySelectorAll<HTMLButtonElement>('.filter-pill');
+    const cards = document.querySelectorAll<HTMLElement>('.testimonial-card');
+
+    pills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        pills.forEach((p) => { p.classList.remove('active'); p.setAttribute('aria-pressed', 'false'); });
+        pill.classList.add('active');
+        pill.setAttribute('aria-pressed', 'true');
+
+        const filter = pill.dataset.filter;
+        cards.forEach((card) => {
+          if (filter === 'all' || card.dataset.serviceType === filter) {
+            card.classList.remove('hidden-by-filter');
+          } else {
+            card.classList.add('hidden-by-filter');
+          }
+        });
+      });
+    });
+  });
+</script>

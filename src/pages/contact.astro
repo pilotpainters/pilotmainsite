@@ -214,7 +214,12 @@ const contactPageJsonLd = {
                 </div>
 
                 {contact.form.privacyNote && (
-                  <p class="text-caption text-neutral-500">{contact.form.privacyNote}</p>
+                  <p class="text-caption text-neutral-500">
+                    {contact.form.privacyNote}{' '}
+                    <a href={withBase('/privacy/')} class="text-primary underline hover:text-primary-dark">
+                      Privacy Policy
+                    </a>
+                  </p>
                 )}
               </form>
             </Card>

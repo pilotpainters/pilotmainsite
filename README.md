@@ -181,4 +181,10 @@ In GitHub repo settings → **Pages**, set the source to **Deploy from a branch 
   - For Web3Forms, also add a hidden `<input type="hidden" name="access_key" value="YOUR_ACCESS_KEY">` inside the form.
   - Test end-to-end submission before deploying.
   - Build a success-state redirect page or thank-you message (not yet implemented).
+- Replace all legal placeholder content before publishing:
+  - `content/pages/privacy.md`, `content/pages/terms.md`, and `content/pages/cookies.md` contain generic placeholder text.
+  - Every legal page displays a **"Placeholder Content — Lawyer Review Required"** warning banner when `legalReviewBanner.enabled` is `true`.
+  - Have a licensed attorney familiar with Illinois law review and customize all three documents.
+  - Set `legalReviewBanner.enabled: false` in each file's frontmatter once the content has been reviewed and approved.
+  - Update `lastUpdated` and `effectiveDate` to the date the final versions are published.
 - Validate Lighthouse + accessibility in Chrome DevTools.
