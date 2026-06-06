@@ -118,7 +118,7 @@ legal:
         If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at:
 
         - **Email:** info@pilotpainters.com
-        - **Phone:** (872) 310-7709
+        - **Phone:** (773) 200-7709
 
         We will make every effort to respond to your inquiry promptly.
 ---

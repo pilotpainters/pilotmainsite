@@ -115,5 +115,5 @@ legal:
         If you have any questions about these Terms of Service, please contact us at:
 
         - **Email:** info@pilotpainters.com
-        - **Phone:** (872) 310-7709
+        - **Phone:** (773) 200-7709
 ---

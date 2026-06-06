@@ -72,8 +72,8 @@ export const siteConfig: SiteConfig = {
   tagline: 'Precision painting, smooth landings.',
   shortDescription:
     'Professional interior, exterior, cabinet, and commercial painting with a meticulous prep-first process.',
-  phone: '(872) 310-7709',
-  phoneTel: '+18723107709',
+  phone: '(773) 200-7709',
+  phoneTel: '+17732007709',
   email: 'info@pilotpainters.com',
   serviceAreas: ['TODO: Service Area 1', 'TODO: Service Area 2', 'TODO: Service Area 3'],
   address: {
