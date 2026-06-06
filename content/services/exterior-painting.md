@@ -17,6 +17,9 @@ hero:
   eyebrow: Exterior services
   headline: Exterior paint that stands up to Chicagoland weather
   subheadline: We focus on adhesion and drainage details—so your repaint lasts longer than a quick coat and a hope.
+  banner:
+    src: /assets/images/home/exterior-painting-banner.webp
+    alt: Freshly painted home exterior with clean trim and updated siding color
 
 featuresHeading: What is included
 features:
@@ -50,6 +53,46 @@ process:
   - step: 4
     title: Detail pass and cleanup
     description: Final inspection, touch-ups, and jobsite cleanup—before we call it done.
+
+projectScope:
+  heading: Homes and buildings we paint outside
+  lead: From brick two-flats in the city to vinyl-sided suburbs, we match prep depth and coating systems to the substrate — so the finish holds up through freeze-thaw, sun, and wind-driven rain.
+  types:
+    - icon: home
+      title: Single-family homes
+      description: Lap siding, cedar, stucco, and brick — full elevations with trim, fascia, and porch detail included.
+    - icon: building
+      title: Multi-unit & two-flats
+      description: Chicago brick buildings and townhome rows — phased work that respects tenants, walks, and shared entries.
+    - icon: layers
+      title: Decks, porches & railings
+      description: Wood and composite surfaces prepped and coated with systems rated for foot traffic and moisture.
+    - icon: users
+      title: Light commercial exteriors
+      description: Storefronts, offices, and mixed-use facades — durable finishes with minimal business disruption.
+
+showcase:
+  heading: Exterior work in the field
+  lead: Finished elevations, trim contrast, and the prep detail that makes Chicagoland exteriors last.
+  images:
+    - src: /assets/images/home/exterior-showcase-finished-home.webp
+      alt: Taupe siding home with crisp white trim and updated front entry
+      caption: Full elevation refresh with warm body color and bright trim
+    - src: /assets/images/home/exterior-showcase-two-tone.webp
+      alt: Charcoal siding with white trim on a suburban home
+      caption: Modern two-tone palette on siding and garage
+    - src: /assets/images/home/exterior-showcase-blue-home.webp
+      alt: Painted brick home with navy accents and white trim
+      caption: Brick and wood trim with accent door color
+    - src: /assets/images/home/exterior-showcase-trim-detail.webp
+      alt: Close-up of freshly painted exterior trim and fascia
+      caption: Fascia, soffit, and casing after scrape and prime
+
+relatedProjects:
+  heading: Featured exterior projects
+  lead: Recent exterior work in Chicago, Elmhurst, and Schaumburg — plus more finishes across Chicagoland.
+  viewAllLabel: View all projects
+  viewAllHref: /projects/
 
 cta:
   headline: Protect your biggest investment

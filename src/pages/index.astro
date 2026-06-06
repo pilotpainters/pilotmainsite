@@ -27,7 +27,9 @@ services.sort((a, b) => {
 });
 
 const projects = (await getCollection('projects')).filter((p) => !p.data.draft);
-const featuredProjects = projects.filter((p) => p.data.featured);
+const featuredProjects = projects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => b.data.completedDate.getTime() - a.data.completedDate.getTime());
 const nonFeaturedProjects = projects.filter((p) => !p.data.featured);
 const projectsToShow = [...featuredProjects, ...nonFeaturedProjects].slice(0, 3);
 
@@ -204,7 +206,7 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
         <h2 id="trustHeading" class="sr-only">
           {home.trustStrip.items.map((i) => i.label).join(', ')}
         </h2>
-        <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div class="card-grid card-grid-2-4-tight gap-4">
           {home.trustStrip.items.map((item) => (
             <Card variant="outlined" padding="md" class="bg-brand-white">
               <div class="flex items-center gap-3">
@@ -225,14 +227,14 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
     <!-- Services -->
     <Section id="services" tone="white" spacing="md" aria-labelledby="servicesHeading">
       <Container size="lg">
-        <div class="max-w-2xl">
+        <div class="mx-auto max-w-2xl text-center">
           <h2 id="servicesHeading" class="text-h2 text-neutral-900">
             {home.servicesOverview.heading}
           </h2>
           <p class="mt-4 text-body text-neutral-700">{home.servicesOverview.lead}</p>
         </div>
 
-        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="card-grid card-grid-2-4 mt-10">
           {services.slice(0, 4).map((service) => {
             const slug = service.data.slug ?? service.slug;
             const href = withBase(`/services/${slug}/`);
@@ -277,7 +279,7 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
     <!-- Process -->
     <Section id="process" tone="neutral" spacing="md" aria-labelledby="processHeading">
       <Container size="lg">
-        <div class="max-w-2xl">
+        <div class="mx-auto max-w-2xl text-center">
           <h2 id="processHeading" class="text-h2 text-neutral-900">
             {home.process.heading}
           </h2>
@@ -285,7 +287,7 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
         </div>
 
         <div class="mt-10">
-          <div class="grid gap-6 md:grid-cols-4">
+          <div class="card-grid card-grid-4-md">
             {home.process.steps.map((step, idx) => (
               <Card variant="outlined" padding="md" class="relative">
                 {idx < home.process.steps.length - 1 && (
@@ -315,14 +317,14 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
     <!-- Featured Projects -->
     <Section id="projects" tone="white" spacing="md" aria-labelledby="projectsHeading">
       <Container size="lg">
-        <div class="max-w-2xl">
+        <div class="mx-auto max-w-2xl text-center">
           <h2 id="projectsHeading" class="text-h2 text-neutral-900">
             {home.featuredProjects.heading}
           </h2>
           <p class="mt-4 text-body text-neutral-700">{home.featuredProjects.lead}</p>
         </div>
 
-        <div class="mt-10 grid gap-6 md:grid-cols-3">
+        <div class="card-grid card-grid-3 mt-10">
           {projectsToShow.map((project) => {
             const imageSrc = resolvePublicImage(project.data.coverImage, 'project');
             const typeLabel = serviceTypeLabels[project.data.serviceType] ?? project.data.serviceType;
@@ -359,7 +361,7 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
           })}
         </div>
 
-        <div class="mt-10">
+        <div class="mt-10 text-center">
           <Button href={withBase(home.featuredProjects.viewAllHref)} variant="primary" size="md">
             {home.featuredProjects.viewAllLabel}
           </Button>
@@ -375,7 +377,7 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
       aria-labelledby="testimonialHeading"
     >
       <Container size="lg">
-        <h2 id="testimonialHeading" class="text-h2 text-neutral-900">
+        <h2 id="testimonialHeading" class="text-center text-h2 text-neutral-900">
           {home.testimonialSlice.heading}
         </h2>
 

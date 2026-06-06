@@ -5,7 +5,7 @@ icon: shield-check
 summary: Offices and retail spaces painted on a schedule that respects tenants, customers, and operating hours.
 image: /assets/images/home/home-commercial-painting-card-img.jpg
 order: 4
-featured: false
+featured: true
 draft: false
 
 seo:
@@ -17,6 +17,9 @@ hero:
   eyebrow: Commercial services
   headline: Commercial painting with minimal operational drag
   subheadline: We coordinate access, staging, and dry times so your team can keep working—or we shift work to off-hours when it matters.
+  banner:
+    src: /assets/images/placeholders/service-placeholder.svg
+    alt: Commercial interior painting project placeholder
 
 featuresHeading: What is included
 features:
@@ -50,6 +53,46 @@ process:
   - step: 4
     title: Closeout and turnover
     description: Touch-ups, label-back of colors, and a clean handoff for facilities teams.
+
+projectScope:
+  heading: Spaces we paint for business
+  lead: From downtown offices to suburban clinics and retail suites, we phase work around your hours — keeping corridors open, tenants informed, and turnover on schedule.
+  types:
+    - icon: building
+      title: Offices & suites
+      description: Open workspaces, private offices, conference rooms, and reception — overnight or weekend options available.
+    - icon: users
+      title: Retail & hospitality
+      description: Storefronts, restaurants, and customer-facing areas painted with minimal visibility of active work zones.
+    - icon: home
+      title: Medical & clinics
+      description: Exam rooms, waiting areas, and staff zones — low-odor coatings and weekend mobilization when needed.
+    - icon: layers
+      title: Common areas & corridors
+      description: Lobbies, hallways, stairwells, and shared amenities — durable finishes for high-traffic footfall.
+
+showcase:
+  heading: Commercial work in the field
+  lead: Office refreshes, clinic turnarounds, and phased suite repaints — placeholder images until project photos are added.
+  images:
+    - src: /assets/images/placeholders/service-placeholder.svg
+      alt: Commercial office interior painting placeholder
+      caption: Open office suite repaint — phased by zone
+    - src: /assets/images/placeholders/service-placeholder.svg
+      alt: Commercial retail space painting placeholder
+      caption: Retail frontage and sales floor refresh
+    - src: /assets/images/placeholders/service-placeholder.svg
+      alt: Medical clinic interior painting placeholder
+      caption: Clinic waiting room and corridor update
+    - src: /assets/images/placeholders/service-placeholder.svg
+      alt: Commercial hallway painting placeholder
+      caption: Common-area walls and trim touch-up
+
+relatedProjects:
+  heading: Featured commercial projects
+  lead: Recent commercial work in Chicago, Elmhurst, and Schaumburg — offices, retail, and clinics across Chicagoland.
+  viewAllLabel: View all projects
+  viewAllHref: /projects/
 
 cta:
   headline: Need a dependable painting partner?

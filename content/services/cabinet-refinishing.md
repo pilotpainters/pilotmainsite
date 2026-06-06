@@ -5,7 +5,7 @@ icon: paint-bucket
 summary: Degrease, sand, and spray-smooth cabinet finishes that look like new—without a full remodel.
 image: /assets/images/home/cabinet-img.jpg
 order: 3
-featured: false
+featured: true
 draft: false
 
 seo:
@@ -17,6 +17,9 @@ hero:
   eyebrow: Cabinet services
   headline: Cabinet finishes that read “factory smooth”
   subheadline: We treat kitchens like workshops—controlling dust, building adhesion, and applying coatings that stand up to hands, steam, and cleaning.
+  banner:
+    src: /assets/images/home/cabinet-refinishing-banner.jpg
+    alt: Refinished kitchen cabinets with smooth white finish and modern hardware
 
 featuresHeading: What is included
 features:
@@ -50,6 +53,46 @@ process:
   - step: 4
     title: Walkthrough and care notes
     description: We reinstall hardware, review touch points, and share simple care guidance for the first week.
+
+projectScope:
+  heading: Cabinets we refinish
+  lead: From single vanity updates to full kitchen and pantry transformations, we match prep depth and coating systems to your cabinet material — so the finish survives steam, grease, and daily cleaning.
+  types:
+    - icon: home
+      title: Kitchen cabinets
+      description: Doors, drawer fronts, face frames, and islands — sprayed or hand-applied for a smooth, durable finish.
+    - icon: layers
+      title: Vanities & built-ins
+      description: Bathroom vanities, mudroom lockers, and built-in shelving — scoped to match adjacent rooms.
+    - icon: building
+      title: Condos & townhomes
+      description: Compact kitchens with HOA-friendly scheduling and careful protection of shared hallways and entries.
+    - icon: users
+      title: Rentals & turnovers
+      description: Vacant units and property-manager schedules — fast turnarounds with consistent color across portfolios.
+
+showcase:
+  heading: Cabinet work in the field
+  lead: Kitchen refreshes, two-tone schemes, and the prep detail behind a finish that reads factory-smooth.
+  images:
+    - src: /assets/images/home/cabinet-showcase-kitchen.jpg
+      alt: Bright white refinished kitchen cabinets with stainless appliances
+      caption: Full kitchen cabinet refinishing in warm white
+    - src: /assets/images/home/cabinet-showcase-full-kitchen.jpg
+      alt: Greige kitchen cabinets with quartz countertops after refinishing
+      caption: Oak-to-greige transformation with updated hardware
+    - src: /assets/images/home/cabinet-showcase-island.webp
+      alt: Kitchen island with refinished white cabinetry and pendant lights
+      caption: Island and perimeter cabinets in coordinated palette
+    - src: /assets/images/home/cabinet-showcase-detail.webp
+      alt: Close-up of smooth cabinet door finish and hardware
+      caption: Spray-smooth door profile and edge detail
+
+relatedProjects:
+  heading: Featured cabinet projects
+  lead: Recent cabinet work in Chicago, Elmhurst, and Schaumburg — kitchens, vanities, and pantries across Chicagoland.
+  viewAllLabel: View all projects
+  viewAllHref: /projects/
 
 cta:
   headline: Love your layout, not your finish?

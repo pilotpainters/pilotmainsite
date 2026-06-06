@@ -8,6 +8,7 @@ import CTABand from '@/components/ui/CTABand.astro';
 import { Icon } from 'astro-icon/components';
 import { getCollection } from 'astro:content';
 import { withBase } from '@/lib/url';
+import { resolvePublicImage } from '@/lib/images';
 import { siteConfig } from '@config/site.config';
 
 export async function getStaticPaths() {
@@ -34,14 +35,22 @@ const gradientDirectionMap: Record<string, string> = {
   tl: 'bg-gradient-to-tl',
 };
 
-const heroBgClasses = [
-  gradientDirectionMap.br,
-  'from-brand-black',
-  'to-primary-dark',
-  'relative',
-  'overflow-hidden',
-  'text-brand-white',
-];
+const heroBanner = data.hero.banner;
+const heroBannerSrc = heroBanner
+  ? resolvePublicImage(heroBanner.src, 'service')
+  : undefined;
+const hasHeroBanner = Boolean(heroBanner && heroBannerSrc);
+
+const heroBgClasses = hasHeroBanner
+  ? ['!bg-transparent', 'relative', 'overflow-hidden', 'text-brand-white']
+  : [
+      gradientDirectionMap.br,
+      'from-brand-black',
+      'to-primary-dark',
+      'relative',
+      'overflow-hidden',
+      'text-brand-white',
+    ];
 
 const title = data.seo.title ?? `${data.title} in Chicagoland`;
 const description =
@@ -55,6 +64,13 @@ const processSteps = [...data.process].sort((a, b) => a.step - b.step);
 const featuresHeading = data.featuresHeading ?? 'What is included';
 const processHeading =
   data.processHeading ?? `How we approach ${data.title.toLowerCase()}`;
+
+const matchingProjects = data.relatedProjects
+  ? (await getCollection('projects'))
+      .filter((p) => !p.data.draft && p.data.serviceType === data.slug)
+      .sort((a, b) => b.data.completedDate.getTime() - a.data.completedDate.getTime())
+      .slice(0, 3)
+  : [];
 
 const serviceJsonLd = {
   '@context': 'https://schema.org',
@@ -77,17 +93,39 @@ const serviceJsonLd = {
   image={ogImage}
   jsonLd={[serviceJsonLd]}
 >
+  {hasHeroBanner && (
+    <Fragment slot="head">
+      <link rel="preload" as="image" href={withBase(heroBannerSrc!)} />
+    </Fragment>
+  )}
+
   <main class="flex-1">
     <Section
       id="service-hero"
       tone="white"
       spacing="lg"
       containerSize={null}
-      class:list={[...heroBgClasses]}
+      class:list={heroBgClasses}
       labelledby="service-hero-heading"
     >
-      <Container size="lg">
-        <div class="max-w-3xl">
+      {hasHeroBanner && (
+        <div class="absolute inset-0 z-0" aria-hidden="true">
+          <img
+            src={withBase(heroBannerSrc!)}
+            alt={heroBanner!.alt}
+            width="1600"
+            height="900"
+            class="h-full w-full object-cover"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+          <div class="absolute inset-0 bg-neutral-900/75" />
+        </div>
+      )}
+
+      <Container size="lg" class="relative z-10">
+        <div class="mx-auto max-w-3xl text-center">
           {data.hero.eyebrow && (
             <p class="text-caption uppercase tracking-wide text-primary-light">{data.hero.eyebrow}</p>
           )}
@@ -104,47 +142,158 @@ const serviceJsonLd = {
       </Container>
     </Section>
 
-    <Section
-      id="features"
-      tone="white"
-      spacing="md"
-      labelledby="features-heading"
-    >
-      <Container size="lg">
-        <h2 id="features-heading" class="text-h2 text-neutral-900">
-          {featuresHeading}
-        </h2>
-        <ul class="mt-10 grid list-none gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {data.features.map((feature) => (
-            <li>
-              <Card variant="outlined" padding="md" class="h-full">
-                <div class="flex items-start gap-4">
-                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-dark text-brand-white">
-                    <Icon name={`lucide:${feature.icon}`} class="h-6 w-6" aria-hidden="true" />
+    {data.projectScope && (
+      <Section
+        id="project-scope"
+        tone="neutral"
+        spacing="md"
+        labelledby="project-scope-heading"
+      >
+        <Container size="lg">
+          <div class="mx-auto max-w-2xl text-center">
+            <h2 id="project-scope-heading" class="text-h2 text-neutral-900">
+              {data.projectScope.heading}
+            </h2>
+            <p class="mt-4 text-body text-neutral-700">{data.projectScope.lead}</p>
+          </div>
+          <ul class="card-grid card-grid-2-4 mt-10 list-none">
+            {data.projectScope.types.map((type) => (
+              <li>
+                <Card variant="outlined" padding="md" class="h-full bg-brand-white">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-md bg-primary-dark text-brand-white">
+                    <Icon name={`lucide:${type.icon}`} class="h-5 w-5" aria-hidden="true" />
                   </div>
-                  <div>
-                    <h3 class="text-h3 text-neutral-900">{feature.title}</h3>
-                    <p class="mt-2 text-body text-neutral-700">{feature.description}</p>
-                  </div>
-                </div>
-              </Card>
-            </li>
-          ))}
-        </ul>
-      </Container>
-    </Section>
+                  <h3 class="mt-4 text-h6 text-neutral-900">{type.title}</h3>
+                  <p class="mt-2 text-small text-neutral-700">{type.description}</p>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </Section>
+    )}
+
+    {data.showcase && (
+      <Section
+        id="showcase"
+        tone="white"
+        spacing="md"
+        labelledby="showcase-heading"
+      >
+        <Container size="lg">
+          <div class="mx-auto max-w-2xl text-center">
+            <h2 id="showcase-heading" class="text-h2 text-neutral-900">
+              {data.showcase.heading}
+            </h2>
+            <p class="mt-4 text-body text-neutral-700">{data.showcase.lead}</p>
+          </div>
+          <ul class="card-grid card-grid-2-tight mt-10 list-none gap-4">
+            {data.showcase.images.map((img, idx) => {
+              const src = resolvePublicImage(img.src, 'service');
+              const isFeature = idx === 0;
+              return (
+                <li class:list={[isFeature && '!w-full sm:!w-full']}>
+                  <figure class="overflow-hidden rounded-lg bg-neutral-50">
+                    <div class:list={[isFeature ? 'aspect-[21/9]' : 'aspect-[4/3]']}>
+                      <img
+                        src={withBase(src)}
+                        alt={img.alt}
+                        width={isFeature ? '960' : '640'}
+                        height={isFeature ? '410' : '480'}
+                        class="h-full w-full object-cover object-center"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    {img.caption && (
+                      <figcaption class="px-4 py-3 text-small text-neutral-600">
+                        {img.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                </li>
+              );
+            })}
+          </ul>
+        </Container>
+      </Section>
+    )}
+
+    {data.relatedProjects && matchingProjects.length > 0 && (
+      <Section
+        id="related-projects"
+        tone="neutral"
+        spacing="md"
+        labelledby="related-projects-heading"
+      >
+        <Container size="lg">
+          <div class="mx-auto max-w-2xl text-center">
+            <h2 id="related-projects-heading" class="text-h2 text-neutral-900">
+              {data.relatedProjects.heading}
+            </h2>
+            <p class="mt-4 text-body text-neutral-700">{data.relatedProjects.lead}</p>
+          </div>
+          <ul class="card-grid card-grid-3 mt-10 list-none">
+            {matchingProjects.map((project) => {
+              const imageSrc = resolvePublicImage(project.data.coverImage, 'project');
+              const href = withBase(`/projects/${project.data.slug}/`);
+              return (
+                <li>
+                  <a
+                    href={href}
+                    class="group block h-full focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+                  >
+                    <Card variant="outlined" padding="none" class="flex h-full flex-col overflow-hidden bg-brand-white">
+                      <div class="aspect-[16/9] w-full shrink-0 overflow-hidden bg-neutral-50">
+                        <img
+                          src={withBase(imageSrc)}
+                          alt=""
+                          width="640"
+                          height="360"
+                          class="h-full w-full object-cover object-center"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                      <div class="flex flex-1 flex-col p-6">
+                        <h3 class="text-h6 text-neutral-900 group-hover:text-primary">
+                          {project.data.title}
+                        </h3>
+                        <p class="mt-2 flex items-center gap-2 text-small text-neutral-700">
+                          <Icon name="lucide:map-pin" class="h-4 w-4 text-primary" aria-hidden="true" />
+                          {project.data.location}
+                        </p>
+                      </div>
+                    </Card>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+          <div class="mt-10 text-center">
+            <Button
+              href={withBase(data.relatedProjects.viewAllHref)}
+              variant="primary"
+              size="md"
+            >
+              {data.relatedProjects.viewAllLabel}
+            </Button>
+          </div>
+        </Container>
+      </Section>
+    )}
 
     <Section
       id="process"
-      tone="neutral"
+      tone="white"
       spacing="md"
       labelledby="process-heading"
     >
       <Container size="lg">
-        <h2 id="process-heading" class="text-h2 text-neutral-900">
+        <h2 id="process-heading" class="text-center text-h2 text-neutral-900">
           {processHeading}
         </h2>
-        <ol class="mt-10 grid list-none gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <ol class="card-grid card-grid-2-4 mt-10 list-none">
           {processSteps.map((step, idx) => (
             <li>
               <Card variant="outlined" padding="md" class="relative h-full">
@@ -165,6 +314,36 @@ const serviceJsonLd = {
             </li>
           ))}
         </ol>
+      </Container>
+    </Section>
+
+    <Section
+      id="features"
+      tone="white"
+      spacing="md"
+      labelledby="features-heading"
+    >
+      <Container size="lg">
+        <h2 id="features-heading" class="text-center text-h2 uppercase text-neutral-900">
+          {featuresHeading}
+        </h2>
+        <ul class="card-grid card-grid-2-3 mt-10 list-none">
+          {data.features.map((feature) => (
+            <li>
+              <Card variant="outlined" padding="md" class="h-full">
+                <div class="flex items-start gap-4">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-dark text-brand-white">
+                    <Icon name={`lucide:${feature.icon}`} class="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 class="text-h3 text-neutral-900">{feature.title}</h3>
+                    <p class="mt-2 text-body text-neutral-700">{feature.description}</p>
+                  </div>
+                </div>
+              </Card>
+            </li>
+          ))}
+        </ul>
       </Container>
     </Section>
 

@@ -65,7 +65,7 @@ const aboutPageJsonLd = {
     {/* Story */}
     <Section id="story" tone="white" spacing="md" labelledby="story-heading">
       <Container size="lg">
-        <h2 id="story-heading" class="text-h2 text-neutral-900">{about.story.heading}</h2>
+        <h2 id="story-heading" class="text-center text-h2 text-neutral-900">{about.story.heading}</h2>
         <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_20rem] lg:items-start">
           <div class="prose prose-neutral max-w-none text-body text-neutral-700">
             <Content />
@@ -88,8 +88,8 @@ const aboutPageJsonLd = {
     {/* Values */}
     <Section id="values" tone="neutral" spacing="md" labelledby="values-heading">
       <Container size="lg">
-        <h2 id="values-heading" class="text-h2 text-neutral-900">{valuesHeading}</h2>
-        <ul class="mt-10 grid list-none gap-6 md:grid-cols-2">
+        <h2 id="values-heading" class="text-center text-h2 text-neutral-900">{valuesHeading}</h2>
+        <ul class="card-grid card-grid-2 mt-10 list-none">
           {about.values.map((value) => (
             <li>
               <Card variant="outlined" padding="md" class="h-full bg-brand-white">
@@ -112,7 +112,7 @@ const aboutPageJsonLd = {
     {/* Service Area */}
     <Section id="service-area" tone="white" spacing="md" labelledby="service-area-heading">
       <Container size="lg">
-        <div class="max-w-2xl">
+        <div class="mx-auto max-w-2xl text-center">
           <h2 id="service-area-heading" class="text-h2 text-neutral-900">{about.serviceArea.heading}</h2>
           <p class="mt-2 text-h5 text-neutral-500">{about.serviceArea.subheading}</p>
           <p class="mt-6 text-body text-neutral-700">{about.serviceArea.description}</p>

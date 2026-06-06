@@ -52,13 +52,15 @@ const servicesJsonLd = {
   <main class="flex-1">
     <Section id="page-header" tone="neutral" spacing="lg" labelledby="services-page-heading">
       <Container size="lg">
-        <h1 id="services-page-heading" class="text-h1 text-neutral-900">
-          {si.hero.heading}
-        </h1>
-        <p class="mt-6 max-w-3xl text-body text-neutral-700">{si.hero.lead}</p>
-        {si.intro?.lead && (
-          <p class="mt-4 max-w-3xl text-body text-neutral-700">{si.intro.lead}</p>
-        )}
+        <div class="mx-auto max-w-3xl text-center">
+          <h1 id="services-page-heading" class="text-h1 text-neutral-900">
+            {si.hero.heading}
+          </h1>
+          <p class="mt-6 text-body text-neutral-700">{si.hero.lead}</p>
+          {si.intro?.lead && (
+            <p class="mt-4 text-body text-neutral-700">{si.intro.lead}</p>
+          )}
+        </div>
       </Container>
     </Section>
 
@@ -67,7 +69,7 @@ const servicesJsonLd = {
         <h2 id="services-grid-heading" class="sr-only">
           {allServices.map((s) => s.data.title).join(', ')}
         </h2>
-        <ul class="grid list-none gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <ul class="card-grid card-grid-2-3 list-none">
           {allServices.map((service) => {
             const href = withBase(`/services/${service.data.slug}/`);
             const imageSrc = resolvePublicImage(service.data.image, 'service');

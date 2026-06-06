@@ -25,7 +25,7 @@ info:
   colors:
     - Benjamin Moore Simply White OC-117
     - Sherwin-Williams Extra White SW 7006 (island accent)
-featured: true
+featured: false
 draft: false
 seo:
   title: Kitchen Cabinet Refinishing in Naperville

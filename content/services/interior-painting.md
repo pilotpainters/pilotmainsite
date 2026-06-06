@@ -17,6 +17,9 @@ hero:
   eyebrow: Interior services
   headline: Interior painting that feels intentional, not rushed
   subheadline: We plan color flow room-to-room, prep surfaces the right way, and leave edges sharp—so your home looks refreshed without the stress of a messy remodel.
+  banner:
+    src: /assets/images/home/interior-painting-banner.webp
+    alt: Freshly painted interior living space with clean trim and walls
 
 featuresHeading: What is included
 features:
@@ -50,6 +53,46 @@ process:
   - step: 4
     title: Final look and touch-ups
     description: A walkthrough together ensures touch-ups are handled before we reset furniture and remove protection.
+
+projectScope:
+  heading: From one room to whole buildings
+  lead: Whether you need a single accent wall or a phased repaint across dozens of units, we scale our crew and schedule to match the job—without cutting corners on prep or communication.
+  types:
+    - icon: door-open
+      title: Single room refresh
+      description: Bedrooms, bathrooms, kitchens, and home offices—scoped tightly so you can keep living in the space while we work.
+    - icon: home
+      title: Whole-home interior
+      description: Full interior repaints with a cohesive color plan, room-by-room sequencing, and furniture protection throughout.
+    - icon: building
+      title: Condos & townhomes
+      description: HOA-friendly scheduling, elevator coordination, and clean common-area transitions for multi-level units.
+    - icon: users
+      title: Multi-family & rentals
+      description: Turnover units, vacant apartments, and common hallways—phased work that keeps occupancy disruption low.
+
+showcase:
+  heading: Interior work in the field
+  lead: A look at the rooms, finishes, and detail work we deliver across Chicagoland homes and units.
+  images:
+    - src: /assets/images/home/interior-showcase-living-room.jpg
+      alt: Painted living room with crisp white trim and neutral walls
+      caption: Living room repaint with trim and ceiling
+    - src: /assets/images/home/interior-showcase-kitchen.jpg
+      alt: Freshly painted kitchen with clean cabinet-adjacent walls
+      caption: Kitchen walls and ceiling refresh
+    - src: /assets/images/home/interior-showcase-bathroom.jpg
+      alt: Bathroom interior with moisture-resistant paint finish
+      caption: Bathroom with humidity-rated coatings
+    - src: /assets/images/home/interior-showcase-bedroom.webp
+      alt: Calm bedroom interior with sage green walls and white trim
+      caption: Master suite color update
+
+relatedProjects:
+  heading: Featured interior projects
+  lead: Recent interior work across Chicago and the suburbs — from downtown condos to Elmhurst colonials and Schaumburg townhomes.
+  viewAllLabel: View all projects
+  viewAllHref: /projects/
 
 cta:
   headline: Ready to refresh your interiors?

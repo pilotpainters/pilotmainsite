@@ -5,9 +5,9 @@ summary: Neutral wall refresh and trim touch-ups completed on a tight schedule w
 location: Rolling Meadows, IL
 serviceType: commercial-painting
 completedDate: 2026-01-28
-coverImage: /assets/images/projects/office-suite-rolling-meadows.jpg
+coverImage: /assets/images/placeholders/project-placeholder.svg
 gallery:
-  - src: /assets/images/projects/office-suite-rolling-meadows-01.jpg
+  - src: /assets/images/placeholders/project-placeholder.svg
     alt: Open-plan office area with freshly painted light gray walls
     caption: Main workspace area after overnight paint application.
   - src: /assets/images/projects/office-suite-rolling-meadows-02.jpg

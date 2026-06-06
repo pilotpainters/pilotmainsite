@@ -59,20 +59,22 @@ const projectsJsonLd = {
   <main class="flex-1">
     <Section id="page-header" tone="neutral" spacing="lg" labelledby="projects-page-heading">
       <Container size="lg">
-        <h1 id="projects-page-heading" class="text-h1 text-neutral-900">
-          {pi.hero.heading}
-        </h1>
-        <p class="mt-6 max-w-3xl text-body text-neutral-700">{pi.hero.lead}</p>
-        {pi.intro?.lead && (
-          <p class="mt-4 max-w-3xl text-body text-neutral-700">{pi.intro.lead}</p>
-        )}
+        <div class="mx-auto max-w-3xl text-center">
+          <h1 id="projects-page-heading" class="text-h1 text-neutral-900">
+            {pi.hero.heading}
+          </h1>
+          <p class="mt-6 text-body text-neutral-700">{pi.hero.lead}</p>
+          {pi.intro?.lead && (
+            <p class="mt-4 text-body text-neutral-700">{pi.intro.lead}</p>
+          )}
+        </div>
       </Container>
     </Section>
 
     <Section id="projects-grid" tone="white" spacing="md" labelledby="projects-grid-heading">
       <Container size="lg">
         <h2 id="projects-grid-heading" class="sr-only">All projects</h2>
-        <ul class="grid list-none gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <ul class="card-grid card-grid-2-3 list-none">
           {allProjects.map((project) => {
             const href = withBase(`/projects/${project.data.slug}/`);
             const imageSrc = resolvePublicImage(project.data.coverImage, 'project');

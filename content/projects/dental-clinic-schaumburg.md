@@ -4,10 +4,10 @@ slug: dental-clinic-schaumburg
 summary: Bright, clean finishes for a medical office — completed over a holiday weekend with zero patient impact.
 location: Schaumburg, IL
 serviceType: commercial-painting
-completedDate: 2025-11-22
-coverImage: /assets/images/home/home-dental-clinic-project-img.jpg
+completedDate: 2026-04-30
+coverImage: /assets/images/placeholders/project-placeholder.svg
 gallery:
-  - src: /assets/images/projects/dental-clinic-schaumburg-01.jpg
+  - src: /assets/images/placeholders/project-placeholder.svg
     alt: Dental clinic waiting room with light blue accent wall and white trim
     caption: Waiting room accent wall creates a calming first impression.
   - src: /assets/images/projects/dental-clinic-schaumburg-02.jpg
@@ -25,7 +25,7 @@ info:
     - Benjamin Moore Brittany Blue 1633 (waiting room accent)
     - Sherwin-Williams Passive SW 7064 (treatment rooms and hallways)
     - Sherwin-Williams Pure White SW 7005 (trim and ceilings)
-featured: false
+featured: true
 draft: false
 seo:
   title: Commercial Dental Clinic Painting in Schaumburg

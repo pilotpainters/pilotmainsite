@@ -120,7 +120,7 @@ const reviewsJsonLd = {
     {/* Filter Bar + Testimonials Grid */}
     <Section id="testimonials" tone="neutral" spacing="md" labelledby="filter-heading">
       <Container size="lg">
-        <h2 id="filter-heading" class="text-small font-medium text-neutral-500">{rv.filters.heading}</h2>
+        <h2 id="filter-heading" class="text-center text-small font-medium text-neutral-500">{rv.filters.heading}</h2>
 
         <div class="mt-4 flex flex-wrap gap-2" role="group" aria-label={rv.filters.heading} id="filter-pills">
           <button
@@ -144,7 +144,7 @@ const reviewsJsonLd = {
           ))}
         </div>
 
-        <ul class="mt-10 grid list-none gap-6 md:grid-cols-2 lg:grid-cols-3" id="reviews-grid">
+        <ul class="card-grid card-grid-2-3 mt-10 list-none" id="reviews-grid">
           {allTestimonials.map((t) => {
             const meta = serviceTypeMeta[t.data.serviceType];
             const avatarSrc = resolvePublicImage(t.data.avatarPath, 'avatar');

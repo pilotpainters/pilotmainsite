@@ -73,7 +73,7 @@ home:
 
   featuredProjects:
     heading: Featured projects
-    lead: A few recent finishes from around the suburbs and city.
+    lead: Recent interior work in Chicago, Elmhurst, and Schaumburg — plus more finishes across the metro area.
     viewAllLabel: View All Projects
     viewAllHref: /projects/
     typeTagLabel: Project type

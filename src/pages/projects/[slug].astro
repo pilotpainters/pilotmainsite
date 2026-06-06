@@ -115,7 +115,7 @@ const projectJsonLd = {
     {/* Image Gallery */}
     <Section id="gallery" tone="white" spacing="md" labelledby="gallery-heading">
       <Container size="lg">
-        <h2 id="gallery-heading" class="text-h2 text-neutral-900">{galleryHeading}</h2>
+        <h2 id="gallery-heading" class="text-center text-h2 text-neutral-900">{galleryHeading}</h2>
         {/* Future enhancement: add lightbox/modal for full-size image viewing. */}
         <ul class="mt-10 grid list-none gap-4 md:grid-cols-2 lg:grid-cols-3">
           {galleryImages.map((img, idx) => {
@@ -148,7 +148,7 @@ const projectJsonLd = {
     {/* Project Info */}
     <Section id="details" tone="neutral" spacing="md" labelledby="details-heading">
       <Container size="lg">
-        <h2 id="details-heading" class="text-h2 text-neutral-900">{detailsHeading}</h2>
+        <h2 id="details-heading" class="text-center text-h2 text-neutral-900">{detailsHeading}</h2>
         <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_24rem]">
           <div class="prose prose-neutral max-w-none text-body text-neutral-700">
             <Content />

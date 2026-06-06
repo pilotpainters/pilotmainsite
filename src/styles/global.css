@@ -81,4 +81,56 @@
   .prose-legal td {
     @apply border-b border-neutral-200 py-2 text-neutral-700;
   }
+
+  /**
+   * Card grids — flex + justify-center so incomplete last rows center
+   * instead of leaving empty space on the right.
+   */
+  .card-grid {
+    @apply flex flex-wrap justify-center gap-6;
+  }
+
+  .card-grid > * {
+    @apply min-w-0;
+  }
+
+  .card-grid-2 > * {
+    @apply w-full md:w-[calc(50%-0.75rem)];
+  }
+
+  .card-grid-3 > * {
+    @apply w-full md:w-[calc(33.333%-1rem)];
+  }
+
+  .card-grid-4 > * {
+    @apply w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)];
+  }
+
+  .card-grid-2-3 > * {
+    @apply w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)];
+  }
+
+  .card-grid-2-4 > * {
+    @apply w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)];
+  }
+
+  .card-grid-4-md > * {
+    @apply w-full md:w-[calc(25%-1.125rem)];
+  }
+
+  .card-grid-2-4-tight > * {
+    @apply w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)];
+  }
+
+  .card-grid-2-tight > * {
+    @apply w-full sm:w-[calc(50%-0.5rem)];
+  }
+
+  form.was-validated .form-field-control:invalid {
+    @apply border-error ring-1 ring-error;
+  }
+
+  form.was-validated .form-field-control:invalid ~ .form-field-error {
+    @apply block;
+  }
 }

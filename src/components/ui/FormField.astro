@@ -9,7 +9,8 @@
  * - `select`: renders a <select>; pass options via the default <slot>.
  *
  * All field types share consistent border, padding, focus, and validation styling.
- * Native HTML5 validation is used — :invalid state is styled via peer utilities.
+ * Native HTML5 validation is used — errors appear only after the parent form
+ * receives the `was-validated` class (set on submit).
  */
 
 type FieldType = 'input' | 'textarea' | 'select';
@@ -44,7 +45,7 @@ const {
 
 const helpId = helpText ? `${id}-help` : undefined;
 const inputClasses =
-  'peer w-full rounded-md border border-neutral-300 bg-brand-white px-4 py-2.5 text-body text-neutral-900 placeholder:text-neutral-500 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:ring-offset-brand-white invalid:[&:not(:placeholder-shown):not(:focus)]:border-error invalid:[&:not(:placeholder-shown):not(:focus)]:ring-1 invalid:[&:not(:placeholder-shown):not(:focus)]:ring-error';
+  'form-field-control w-full rounded-md border border-neutral-300 bg-brand-white px-4 py-2.5 text-body text-neutral-900 placeholder:text-neutral-500 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:ring-offset-brand-white';
 ---
 
 <div class:list={['space-y-1.5', className]}>
@@ -88,11 +89,11 @@ const inputClasses =
     />
   )}
 
+  <p class="form-field-error hidden text-caption text-error" aria-live="polite">
+    Please enter a valid {label.toLowerCase()}.
+  </p>
+
   {helpText && (
     <p id={helpId} class="text-caption text-neutral-500">{helpText}</p>
   )}
-
-  <p class="hidden text-caption text-error peer-invalid:[&:not(:placeholder-shown):not(:focus)]:block" aria-live="polite">
-    Please enter a valid {label.toLowerCase()}.
-  </p>
 </div>

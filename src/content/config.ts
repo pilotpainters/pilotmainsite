@@ -42,11 +42,57 @@ const services = defineCollection({
         headline: z.string(),
         subheadline: z.string(),
         eyebrow: z.string().optional(),
+        banner: z
+          .object({
+            src: z.string(),
+            alt: z.string(),
+          })
+          .optional(),
       }),
       featuresHeading: z.string().optional(),
       features: z.array(serviceFeatureSchema).min(3).max(8),
       processHeading: z.string().optional(),
       process: z.array(serviceProcessSchema).min(3).max(6),
+      projectScope: z
+        .object({
+          heading: z.string(),
+          lead: z.string(),
+          types: z
+            .array(
+              z.object({
+                icon: z.string(),
+                title: z.string(),
+                description: z.string(),
+              }),
+            )
+            .min(2)
+            .max(6),
+        })
+        .optional(),
+      showcase: z
+        .object({
+          heading: z.string(),
+          lead: z.string(),
+          images: z
+            .array(
+              z.object({
+                src: z.string(),
+                alt: z.string(),
+                caption: z.string().optional(),
+              }),
+            )
+            .min(2)
+            .max(8),
+        })
+        .optional(),
+      relatedProjects: z
+        .object({
+          heading: z.string(),
+          lead: z.string(),
+          viewAllLabel: z.string().default('View all projects'),
+          viewAllHref: z.string().default('/projects/'),
+        })
+        .optional(),
       cta: z.object({
         headline: z.string(),
         subheading: z.string(),
@@ -334,47 +380,49 @@ const pages = defineCollection({
           emailLabel: z.string(),
           responseNote: z.string(),
         }),
-        form: z.object({
-          heading: z.string(),
-          subheading: z.string(),
-          submitLabel: z.string(),
-          successMessage: z.string(),
-          privacyNote: z.string().optional(),
-          fields: z.object({
-            name: z.object({
-              label: z.string(),
-              placeholder: z.string(),
-              required: z.boolean().default(true),
+        form: z
+          .object({
+            heading: z.string(),
+            subheading: z.string(),
+            submitLabel: z.string(),
+            successMessage: z.string(),
+            privacyNote: z.string().optional(),
+            fields: z.object({
+              name: z.object({
+                label: z.string(),
+                placeholder: z.string(),
+                required: z.boolean().default(true),
+              }),
+              email: z.object({
+                label: z.string(),
+                placeholder: z.string(),
+                required: z.boolean().default(true),
+              }),
+              phone: z.object({
+                label: z.string(),
+                placeholder: z.string(),
+                required: z.boolean().default(true),
+              }),
+              service: z.object({
+                label: z.string(),
+                placeholder: z.string(),
+                required: z.boolean().default(true),
+              }),
+              address: z.object({
+                label: z.string(),
+                placeholder: z.string(),
+                required: z.boolean().default(true),
+                helpText: z.string().optional(),
+              }),
+              message: z.object({
+                label: z.string(),
+                placeholder: z.string(),
+                required: z.boolean().default(true),
+                rows: z.number().int().min(2).max(20).default(5),
+              }),
             }),
-            email: z.object({
-              label: z.string(),
-              placeholder: z.string(),
-              required: z.boolean().default(true),
-            }),
-            phone: z.object({
-              label: z.string(),
-              placeholder: z.string(),
-              required: z.boolean().default(true),
-            }),
-            service: z.object({
-              label: z.string(),
-              placeholder: z.string(),
-              required: z.boolean().default(true),
-            }),
-            address: z.object({
-              label: z.string(),
-              placeholder: z.string(),
-              required: z.boolean().default(true),
-              helpText: z.string().optional(),
-            }),
-            message: z.object({
-              label: z.string(),
-              placeholder: z.string(),
-              required: z.boolean().default(true),
-              rows: z.number().int().min(2).max(20).default(5),
-            }),
-          }),
-        }),
+          })
+          .optional(),
         cta: z
           .object({
             tone: z.enum(['primary', 'dark']).default('dark'),

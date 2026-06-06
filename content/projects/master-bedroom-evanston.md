@@ -29,7 +29,7 @@ info:
     - Sherwin-Williams Extra White SW 7006 (trim and ceiling)
     - Benjamin Moore Chantilly Lace OC-65 (closet interior)
 featured: false
-draft: false
+draft: true
 seo:
   title: Interior Bedroom Painting in Evanston
   description: Pilot Painters created a calming master suite retreat in Evanston with sage green walls, flawless ceiling work, and clean trim detailing.

@@ -28,7 +28,7 @@ info:
     - Sherwin-Williams Repose Gray SW 7015 (siding)
     - Benjamin Moore White Dove OC-17 (trim)
     - Sherwin-Williams Naval SW 6244 (front door)
-featured: true
+featured: false
 draft: false
 seo:
   title: Exterior Painting for a Craftsman Bungalow in Oak Park

@@ -5,7 +5,7 @@ summary: Complete exterior transformation with weather-tight prep and a modern t
 location: Wheaton, IL
 serviceType: exterior-painting
 completedDate: 2025-12-10
-coverImage: /assets/images/projects/whole-house-exterior-wheaton.jpg
+coverImage: /assets/images/home/exterior-showcase-two-tone.webp
 gallery:
   - src: /assets/images/projects/whole-house-exterior-wheaton-01.jpg
     alt: Two-story colonial home in Wheaton after full exterior repaint
