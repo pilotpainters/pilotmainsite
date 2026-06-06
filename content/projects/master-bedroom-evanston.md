@@ -5,7 +5,7 @@ summary: A calming color palette and flawless ceiling work turned a dated bedroo
 location: Evanston, IL
 serviceType: interior-painting
 completedDate: 2026-04-05
-coverImage: /assets/images/projects/master-bedroom-evanston.jpg
+coverImage: /assets/images/home/home-master-bedroom-evanston-project-img.jpg
 gallery:
   - src: /assets/images/projects/master-bedroom-evanston-01.jpg
     alt: Master bedroom with soft sage green walls and white crown molding

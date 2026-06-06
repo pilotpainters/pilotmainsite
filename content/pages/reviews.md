@@ -6,7 +6,7 @@ draft: false
 
 reviews:
   seo:
-    title: Customer Reviews — Pilot Painters Chicagoland
+    title: Customer Reviews
     description: Read verified reviews from Chicagoland homeowners and businesses. See why Pilot Painters earns a 4.9-star average across interior, exterior, cabinet, and commercial painting projects.
 
   hero:

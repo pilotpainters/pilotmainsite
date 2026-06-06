@@ -3,7 +3,7 @@ title: Exterior Painting
 slug: exterior-painting
 icon: building
 summary: Weather-smart prep, durable coatings, and clean edges for siding, trim, and doors.
-image: /assets/images/services/exterior-painting.jpg
+image: /assets/images/home/home-exterior-painting-card-img.webp
 order: 2
 featured: true
 draft: false
@@ -11,7 +11,7 @@ draft: false
 seo:
   title: Exterior Painting in Chicagoland
   description: Midwest-ready exterior repaints with thorough washing, repair, and priming—built to handle freeze-thaw, sun, and wind-driven rain.
-  ogImage: /assets/logos/pilot-painters-logo.png
+  ogImage: /assets/logos/pilot-painters-logo-nbg.png
 
 hero:
   eyebrow: Exterior services

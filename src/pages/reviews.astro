@@ -6,11 +6,11 @@ import Card from '@/components/ui/Card.astro';
 import CTABand from '@/components/ui/CTABand.astro';
 import StarRating from '@/components/ui/StarRating.astro';
 import { Icon } from 'astro-icon/components';
-import { Image } from 'astro:assets';
 import { getEntry, getCollection } from 'astro:content';
 import { withBase } from '@/lib/url';
 import { resolvePublicImage } from '@/lib/images';
 import { siteConfig } from '@config/site.config';
+import { computeAggregateRating } from '@/lib/reviews';
 
 const pageEntry = await getEntry('pages', 'reviews');
 if (!pageEntry?.data.reviews) {
@@ -35,20 +35,16 @@ for (const s of allServices) {
   serviceTypeMeta[s.data.slug] = { label: s.data.title, icon: s.data.icon };
 }
 
-const computedAvg =
-  allTestimonials.length > 0
-    ? Math.round((allTestimonials.reduce((sum, t) => sum + t.data.rating, 0) / allTestimonials.length) * 10) / 10
-    : 0;
-const computedCount = allTestimonials.length;
+const computed = computeAggregateRating(allTestimonials);
 
 const avgRating =
   rv.aggregateRating.displayMode === 'manual' && rv.aggregateRating.manualRating != null
     ? rv.aggregateRating.manualRating
-    : computedAvg;
+    : computed.average;
 const reviewCount =
   rv.aggregateRating.displayMode === 'manual' && rv.aggregateRating.manualReviewCount != null
     ? rv.aggregateRating.manualReviewCount
-    : computedCount;
+    : computed.count;
 
 const reviewsJsonLd = {
   '@context': 'https://schema.org',
@@ -126,7 +122,7 @@ const reviewsJsonLd = {
       <Container size="lg">
         <h2 id="filter-heading" class="text-small font-medium text-neutral-500">{rv.filters.heading}</h2>
 
-        <div class="mt-4 flex flex-wrap gap-2" role="radiogroup" aria-label={rv.filters.heading} id="filter-pills">
+        <div class="mt-4 flex flex-wrap gap-2" role="group" aria-label={rv.filters.heading} id="filter-pills">
           <button
             type="button"
             class="filter-pill active inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-small font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
@@ -165,17 +161,18 @@ const reviewsJsonLd = {
                     <StarRating rating={t.data.rating} size="sm" />
 
                     <blockquote class="mt-4 text-body italic text-neutral-700">
-                      "{t.data.quote}"
+                      &ldquo;{t.data.quote}&rdquo;
                     </blockquote>
 
                     <div class="mt-6 flex items-center gap-3">
-                      <Image
+                      <img
                         src={withBase(avatarSrc)}
                         alt=""
-                        width={48}
-                        height={48}
+                        width="48"
+                        height="48"
                         class="h-12 w-12 rounded-full bg-neutral-50 object-cover"
                         loading="lazy"
+                        decoding="async"
                       />
                       <div>
                         <cite class="not-italic text-small font-semibold text-neutral-900">{t.data.author}</cite>
@@ -222,50 +219,42 @@ const reviewsJsonLd = {
       ariaLabelledby="reviews-cta-heading"
     />
   </main>
-</BaseLayout>
 
-{/*
-  Filter implementation: vanilla JS (~15 lines) toggling visibility via
-  data-service-type attributes. CSS-only :has() was considered but the filter
-  controls and grid live in separate container scopes, making sibling-based
-  selectors impractical without restructuring the semantic layout.
-*/}
-<style>
-  .filter-pill {
-    border-color: theme('colors.neutral.300');
-    background-color: theme('colors.neutral.100');
-    color: theme('colors.neutral.700');
-  }
-  .filter-pill.active {
-    border-color: theme('colors.primary.dark');
-    background-color: theme('colors.primary.DEFAULT');
-    color: theme('colors.brand.white');
-  }
-  .testimonial-card.hidden-by-filter {
-    display: none;
-  }
-</style>
+  <style>
+    .filter-pill {
+      border-color: theme('colors.neutral.300');
+      background-color: theme('colors.neutral.100');
+      color: theme('colors.neutral.700');
+    }
+    .filter-pill.active {
+      border-color: theme('colors.primary.dark');
+      background-color: theme('colors.primary.DEFAULT');
+      color: theme('colors.brand.white');
+    }
+    .testimonial-card.hidden-by-filter {
+      display: none;
+    }
+  </style>
 
-<script>
-  document.addEventListener('astro:page-load', () => {
-    const pills = document.querySelectorAll<HTMLButtonElement>('.filter-pill');
-    const cards = document.querySelectorAll<HTMLElement>('.testimonial-card');
-
-    pills.forEach((pill) => {
-      pill.addEventListener('click', () => {
-        pills.forEach((p) => { p.classList.remove('active'); p.setAttribute('aria-pressed', 'false'); });
-        pill.classList.add('active');
-        pill.setAttribute('aria-pressed', 'true');
-
-        const filter = pill.dataset.filter;
-        cards.forEach((card) => {
-          if (filter === 'all' || card.dataset.serviceType === filter) {
-            card.classList.remove('hidden-by-filter');
-          } else {
-            card.classList.add('hidden-by-filter');
-          }
+  <script is:inline>
+    document.addEventListener('astro:page-load', function() {
+      var pills = document.querySelectorAll('.filter-pill');
+      var cards = document.querySelectorAll('.testimonial-card');
+      pills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          pills.forEach(function(p) { p.classList.remove('active'); p.setAttribute('aria-pressed', 'false'); });
+          pill.classList.add('active');
+          pill.setAttribute('aria-pressed', 'true');
+          var filter = pill.dataset.filter;
+          cards.forEach(function(card) {
+            if (filter === 'all' || card.dataset.serviceType === filter) {
+              card.classList.remove('hidden-by-filter');
+            } else {
+              card.classList.add('hidden-by-filter');
+            }
+          });
         });
       });
     });
-  });
-</script>
+  </script>
+</BaseLayout>

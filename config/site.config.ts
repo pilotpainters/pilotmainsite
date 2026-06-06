@@ -72,15 +72,15 @@ export const siteConfig: SiteConfig = {
   tagline: 'Precision painting, smooth landings.',
   shortDescription:
     'Professional interior, exterior, cabinet, and commercial painting with a meticulous prep-first process.',
-  phone: '(555) 555-0100',
-  phoneTel: '+15555550100',
-  email: 'hello@pilotpainters.example',
+  phone: '(872) 310-7709',
+  phoneTel: '+18723107709',
+  email: 'info@pilotpainters.com',
   serviceAreas: ['TODO: Service Area 1', 'TODO: Service Area 2', 'TODO: Service Area 3'],
   address: {
-    street: 'TODO: 123 Main Street',
-    city: 'TODO: City',
-    region: 'TODO: ST',
-    postalCode: 'TODO: 00000',
+    street: '',
+    city: 'Chicago',
+    region: 'IL',
+    postalCode: '60646',
     country: 'US',
   },
   socials: {
@@ -97,9 +97,9 @@ export const siteConfig: SiteConfig = {
     { day: 'Saturday', schemaDay: 'Saturday', opens: '09:00', closes: '14:00' },
     { day: 'Sunday', schemaDay: 'Sunday', opens: null, closes: null },
   ],
-  license: 'TODO: License # 0000000',
+  license: '',
   insurance: 'Fully insured',
-  foundedYear: 2024,
+  foundedYear: 2018,
   seo: {
     defaultTitle: 'Pilot Painters — Professional Painting Services',
     titleTemplate: '%s | Pilot Painters',
@@ -107,7 +107,7 @@ export const siteConfig: SiteConfig = {
       'Pilot Painters delivers precise interior, exterior, cabinet, and commercial painting with a meticulous prep-first process.',
     // TODO: Replace with a dedicated OG image once brand assets are finalized.
     // Temporary fallback: use the logo PNG.
-    defaultOgImage: '/assets/logos/pilot-painters-logo.png',
+    defaultOgImage: '/assets/logos/pilot-painters-logo-nbg.png',
     locale: 'en-US',
     siteUrl: 'https://pilotpainters.github.io/pilotmainsite',
   },

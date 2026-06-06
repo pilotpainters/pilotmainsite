@@ -8,7 +8,7 @@ projectsIndex:
   seo:
     title: Our Painting Projects in Chicagoland
     description: Browse completed painting projects across Chicagoland — interior, exterior, cabinet refinishing, and commercial. See what Pilot Painters can do for your space.
-    image: /assets/logos/pilot-painters-logo.png
+    image: /assets/logos/pilot-painters-logo-nbg.png
 
   hero:
     heading: Our recent projects

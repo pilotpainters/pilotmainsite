@@ -6,7 +6,7 @@ import Card from '@/components/ui/Card.astro';
 import Button from '@/components/ui/Button.astro';
 import CTABand from '@/components/ui/CTABand.astro';
 import { Icon } from 'astro-icon/components';
-import { Image } from 'astro:assets';
+
 import { getEntry, getCollection, render } from 'astro:content';
 import { withBase } from '@/lib/url';
 import { resolvePublicImage } from '@/lib/images';
@@ -123,12 +123,13 @@ const projectJsonLd = {
             return (
               <li class:list={[isFeature && 'md:col-span-2 md:row-span-2']}>
                 <figure class="overflow-hidden rounded-lg bg-neutral-50">
-                  <Image
+                  <img
                     src={withBase(img.resolved)}
                     alt={img.alt}
-                    width={isFeature ? 960 : 480}
-                    height={isFeature ? 640 : 320}
+                    width={isFeature ? '960' : '480'}
+                    height={isFeature ? '640' : '320'}
                     class="aspect-[3/2] h-full w-full object-cover"
+                    decoding="async"
                     loading={isFeature ? 'eager' : 'lazy'}
                   />
                   {img.caption && (

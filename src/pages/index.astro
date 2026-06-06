@@ -5,13 +5,14 @@ import Container from '@/components/layout/Container.astro';
 import Card from '@/components/ui/Card.astro';
 import Button from '@/components/ui/Button.astro';
 import CTABand from '@/components/ui/CTABand.astro';
+import StarRating from '@/components/ui/StarRating.astro';
 import { Icon } from 'astro-icon/components';
-import { Image } from 'astro:assets';
 import { getEntry, getCollection } from 'astro:content';
 import { withBase } from '@/lib/url';
 import { resolvePublicImage } from '@/lib/images';
 import { siteConfig } from '@config/site.config';
- 
+import { computeAggregateRating } from '@/lib/reviews';
+
 const homeEntry = await getEntry('pages', 'home');
 if (!homeEntry) throw new Error('Missing content entry: content/pages/home.md');
 const home = homeEntry.data.home;
@@ -26,8 +27,9 @@ services.sort((a, b) => {
 });
 
 const projects = (await getCollection('projects')).filter((p) => !p.data.draft);
-const featuredProjects = projects.filter((p) => p.data.featured).slice(0, 3);
-const projectsToShow = (featuredProjects.length >= 3 ? featuredProjects : projects.slice(0, 3)).slice(0, 3);
+const featuredProjects = projects.filter((p) => p.data.featured);
+const nonFeaturedProjects = projects.filter((p) => !p.data.featured);
+const projectsToShow = [...featuredProjects, ...nonFeaturedProjects].slice(0, 3);
 
 const serviceTypeLabels: Record<string, string> = {
   'interior-painting': 'Interior Painting',
@@ -38,6 +40,11 @@ const serviceTypeLabels: Record<string, string> = {
 
 const testimonials = (await getCollection('testimonials')).filter((t) => !t.data.draft);
 const featuredTestimonial = testimonials.find((t) => t.data.featured) ?? testimonials[0];
+
+const { average: computedAvg, count: computedCount } = computeAggregateRating(testimonials);
+const showRating = computedCount >= 5;
+
+const yearsInBusiness = new Date().getFullYear() - siteConfig.foundedYear;
 
 const heroBg = home.hero.background;
 
@@ -68,20 +75,10 @@ const heroImageSrc =
   heroBg.type === 'image' ? resolvePublicImage(heroBg.src, 'project') : undefined;
 const shouldPreloadHeroImage = heroBg.type === 'image' && Boolean(heroImageSrc);
 
-const ratingHasAggregate = home.hero.rating.reviewCount > 0 && home.hero.rating.stars > 0;
-const localBusinessExtensionJsonLd = {
+const localBusinessExtensionJsonLd: Record<string, unknown> = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
   '@id': `${siteConfig.seo.siteUrl}#business`,
-  ...(ratingHasAggregate
-    ? {
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: home.hero.rating.stars,
-          reviewCount: home.hero.rating.reviewCount,
-        },
-      }
-    : {}),
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: `${siteConfig.company} Services`,
@@ -97,6 +94,15 @@ const localBusinessExtensionJsonLd = {
     })),
   },
 };
+
+if (showRating) {
+  localBusinessExtensionJsonLd.aggregateRating = {
+    '@type': 'AggregateRating',
+    ratingValue: computedAvg,
+    reviewCount: computedCount,
+  };
+}
+
 const extraJsonLd = [localBusinessExtensionJsonLd];
 ---
 
@@ -121,26 +127,28 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
       spacing="lg"
       containerSize={null}
       class:list={[
-        ...heroBgClasses,
+        heroBg.type === 'image' ? '!bg-transparent' : heroBgClasses,
         'relative overflow-hidden',
         'text-brand-white',
       ]}
     >
       {heroBg.type === 'image' && heroImageSrc && (
-        <div class="absolute inset-0 -z-10">
-          <Image
+        <div class="absolute inset-0 z-0" aria-hidden="true">
+          <img
             src={withBase(heroImageSrc)}
             alt={heroBg.alt}
-            width={1600}
-            height={900}
-            class="h-full w-full object-cover opacity-40"
+            width="1600"
+            height="900"
+            class="h-full w-full object-cover"
             loading="eager"
+            fetchpriority="high"
+            decoding="async"
           />
-          <div class="absolute inset-0 bg-brand-black/50" />
+          <div class="absolute inset-0 bg-neutral-900/75" />
         </div>
       )}
 
-      <Container size="lg">
+      <Container size="lg" class="relative z-10">
         <div class="max-w-3xl">
           <p class="text-caption uppercase tracking-wide text-neutral-100/90">{home.hero.eyebrow}</p>
           <h1 class="mt-4 text-h1 text-brand-white">{home.hero.headline}</h1>
@@ -161,27 +169,23 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
               <span>{home.hero.trustLine}</span>
             </div>
 
-            <div class="flex items-center gap-2">
-              <div class="flex items-center gap-1" aria-label={home.hero.rating.label}>
-                {Array.from({ length: 5 }).map((_, idx) => (
-                  <Icon
-                    name="lucide:star"
-                    class:list={[
-                      'h-4 w-4',
-                      idx < Math.round(home.hero.rating.stars) ? 'text-accent' : 'text-neutral-100/40',
-                    ]}
-                    aria-hidden="true"
-                  />
-                ))}
+            {showRating && (
+              <div class="flex items-center gap-2">
+                <StarRating
+                  rating={computedAvg}
+                  size="sm"
+                  emptyClass="fill-neutral-100/40"
+                  filledClass="fill-accent"
+                />
+                <span class="text-neutral-100/90">{computedAvg} average ({computedCount} reviews)</span>
+                <a
+                  href={withBase(home.hero.rating.readMoreHref)}
+                  class="text-primary-light underline underline-offset-4 hover:text-brand-white"
+                >
+                  {home.hero.rating.readMoreLabel}
+                </a>
               </div>
-              <span class="text-neutral-100/90">{home.hero.rating.summary}</span>
-              <a
-                href={withBase(home.hero.rating.readMoreHref)}
-                class="text-primary-light underline underline-offset-4 hover:text-brand-white"
-              >
-                {home.hero.rating.readMoreLabel}
-              </a>
-            </div>
+            )}
           </div>
         </div>
       </Container>
@@ -234,19 +238,20 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
             const href = withBase(`/services/${slug}/`);
             const imageSrc = resolvePublicImage(service.data.image, 'service');
             return (
-              <a href={href} class="group block focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
-                <Card variant="outlined" padding="none" class="h-full overflow-hidden">
-                  <div class="aspect-[16/9] bg-neutral-50">
-                    <Image
+              <a href={href} class="group block h-full focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
+                <Card variant="outlined" padding="none" class="flex h-full flex-col overflow-hidden">
+                  <div class="aspect-[16/9] w-full shrink-0 overflow-hidden bg-neutral-50">
+                    <img
                       src={withBase(imageSrc)}
                       alt=""
-                      width={640}
-                      height={360}
-                      class="h-full w-full object-cover"
+                      width="640"
+                      height="360"
+                      class="h-full w-full object-cover object-center"
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
-                  <div class="p-6">
+                  <div class="flex flex-1 flex-col p-6">
                     <div class="flex items-center gap-2">
                       <Icon
                         name={`lucide:${service.data.icon}`}
@@ -255,7 +260,7 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
                       />
                       <p class="text-h6 text-neutral-900 group-hover:text-primary">{service.data.title}</p>
                     </div>
-                    <p class="mt-3 text-small text-neutral-700">{service.data.summary}</p>
+                    <p class="mt-3 flex-1 text-small text-neutral-700">{service.data.summary}</p>
                     <div class="mt-5 inline-flex items-center gap-2 text-small text-primary">
                       <span class="underline underline-offset-4">{home.servicesOverview.learnMoreLabel}</span>
                       <Icon name="lucide:arrow-right" class="h-4 w-4" aria-hidden="true" />
@@ -323,16 +328,17 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
             const typeLabel = serviceTypeLabels[project.data.serviceType] ?? project.data.serviceType;
             const href = withBase(`/projects/${project.data.slug}/`);
             return (
-              <a href={href} class="group block focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
-                <Card variant="outlined" padding="none" class="h-full overflow-hidden">
-                  <div class="aspect-[16/9] bg-neutral-50">
-                    <Image
+              <a href={href} class="group block h-full focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
+                <Card variant="outlined" padding="none" class="flex h-full flex-col overflow-hidden">
+                  <div class="aspect-[16/9] w-full shrink-0 overflow-hidden bg-neutral-50">
+                    <img
                       src={withBase(imageSrc)}
                       alt=""
-                      width={640}
-                      height={360}
-                      class="h-full w-full object-cover"
+                      width="640"
+                      height="360"
+                      class="h-full w-full object-cover object-center"
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div class="p-6">
@@ -377,13 +383,13 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
           <Card variant="outlined" padding="lg" class="mt-10 bg-brand-white">
             <div class="grid gap-8 md:grid-cols-[1fr_auto] md:items-start">
               <div>
-                <div class="flex items-center gap-1" aria-label={home.testimonialSlice.ratingAriaLabel}>
-                  {Array.from({ length: featuredTestimonial.data.rating }).map((_, idx) => (
-                    <Icon key={idx} name="lucide:star" class="h-5 w-5 text-accent" aria-hidden="true" />
-                  ))}
-                </div>
+                <StarRating
+                  rating={featuredTestimonial.data.rating}
+                  size="md"
+                  label={home.testimonialSlice.ratingAriaLabel}
+                />
                 <blockquote class="mt-6 text-h3 text-neutral-900">
-                  “{featuredTestimonial.data.quote}”
+                  &ldquo;{featuredTestimonial.data.quote}&rdquo;
                 </blockquote>
                 <p class="mt-6 text-small text-neutral-700">
                   <span class="font-semibold text-neutral-900">{featuredTestimonial.data.author}</span>
@@ -399,15 +405,14 @@ const extraJsonLd = [localBusinessExtensionJsonLd];
                 </div>
               </div>
               <div class="hidden md:block">
-                <Image
-                  src={withBase(
-                    resolvePublicImage(featuredTestimonial.data.avatarPath, 'avatar'),
-                  )}
+                <img
+                  src={withBase(resolvePublicImage(featuredTestimonial.data.avatarPath, 'avatar'))}
                   alt=""
-                  width={96}
-                  height={96}
+                  width="96"
+                  height="96"
                   class="h-24 w-24 rounded-full bg-neutral-50"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>

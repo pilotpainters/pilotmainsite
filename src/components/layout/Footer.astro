@@ -23,7 +23,7 @@ const socialEntries = Object.entries(siteConfig.socials).filter(([, href]) => Bo
 
 <footer class="bg-neutral-900 text-neutral-100">
   <Container size="lg" class="py-16">
-    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
+    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
       <div>
         <p class="text-h5 font-semibold text-brand-white">{siteConfig.company}</p>
         <p class="mt-2 text-small text-neutral-300">{siteConfig.tagline}</p>
@@ -88,8 +88,12 @@ const socialEntries = Object.entries(siteConfig.socials).filter(([, href]) => Bo
 
     <div class="mt-12 flex flex-col gap-4 border-t border-neutral-700 pt-8 md:flex-row md:items-center md:justify-between">
       <div class="space-y-1 text-caption text-neutral-300">
-        <p>© {copyrightRange} {siteConfig.legalName}. All rights reserved.</p>
-        <p>{siteConfig.license} · {siteConfig.insurance}</p>
+        <p>&copy; {copyrightRange} {siteConfig.legalName}. All rights reserved.</p>
+        {(siteConfig.license || siteConfig.insurance) && (
+          <p>
+            {[siteConfig.license, siteConfig.insurance].filter(Boolean).join(' · ')}
+          </p>
+        )}
       </div>
 
       {
@@ -102,6 +106,7 @@ const socialEntries = Object.entries(siteConfig.socials).filter(([, href]) => Bo
                   target="_blank"
                   rel="noopener noreferrer"
                   class="text-neutral-100 capitalize hover:text-primary-light"
+                  aria-label={`Visit ${siteConfig.company} on ${network.charAt(0).toUpperCase() + network.slice(1)}`}
                 >
                   {network}
                 </a>

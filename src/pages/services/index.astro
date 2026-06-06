@@ -5,7 +5,7 @@ import Container from '@/components/layout/Container.astro';
 import Card from '@/components/ui/Card.astro';
 import CTABand from '@/components/ui/CTABand.astro';
 import { Icon } from 'astro-icon/components';
-import { Image } from 'astro:assets';
+
 import { getEntry, getCollection } from 'astro:content';
 import { withBase } from '@/lib/url';
 import { resolvePublicImage } from '@/lib/images';
@@ -79,12 +79,13 @@ const servicesJsonLd = {
                 >
                   <Card variant="outlined" padding="none" class="h-full overflow-hidden">
                     <div class="aspect-[16/9] bg-neutral-50">
-                      <Image
+                      <img
                         src={withBase(imageSrc)}
                         alt=""
-                        width={640}
-                        height={360}
+                        width="640"
+                        height="360"
                         class="h-full w-full object-cover"
+                        decoding="async"
                         loading="lazy"
                       />
                     </div>

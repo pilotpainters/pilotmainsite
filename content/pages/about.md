@@ -6,7 +6,7 @@ draft: false
 
 about:
   seo:
-    title: About Pilot Painters — Family-Owned Chicagoland Painters
+    title: About — Family-Owned Chicagoland Painters
     description: Family-owned and operated since 2018, Pilot Painters delivers meticulous interior, exterior, cabinet, and commercial painting across the Chicago suburbs. Licensed, insured, and committed to a prep-first process.
 
   hero:

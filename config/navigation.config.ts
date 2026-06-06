@@ -52,15 +52,8 @@ export const navigation: NavigationConfig = {
       title: 'Company',
       links: [
         { label: 'About', href: '/about/' },
-        { label: 'Our Process', href: '/process/' },
         { label: 'Projects', href: '/projects/' },
         { label: 'Reviews', href: '/reviews/' },
-      ],
-    },
-    {
-      title: 'Get in Touch',
-      links: [
-        { label: 'Request a Quote', href: '/contact/' },
         { label: 'Contact', href: '/contact/' },
       ],
     },

@@ -3,7 +3,7 @@ title: Interior Painting
 slug: interior-painting
 icon: home
 summary: Walls, ceilings, trim, and doors with crisp lines, careful prep, and low-VOC options for occupied homes.
-image: /assets/images/services/interior-painting.jpg
+image: /assets/images/home/home-interior-painting-card-img.jpg
 order: 1
 featured: true
 draft: false
@@ -11,7 +11,7 @@ draft: false
 seo:
   title: Interior Painting in Chicagoland
   description: Room-to-room interior painting with color guidance, premium coatings, and a prep-first process that protects floors and furniture.
-  ogImage: /assets/logos/pilot-painters-logo.png
+  ogImage: /assets/logos/pilot-painters-logo-nbg.png
 
 hero:
   eyebrow: Interior services

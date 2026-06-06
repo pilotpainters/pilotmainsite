@@ -5,7 +5,7 @@ summary: Fresh exterior color with careful prep for lasting adhesion and a crisp
 location: Oak Park, IL
 serviceType: exterior-painting
 completedDate: 2026-02-20
-coverImage: /assets/images/projects/bungalow-exterior-oak-park.jpg
+coverImage: /assets/images/home/home-bungalow-exterior-project-img.webp
 gallery:
   - src: /assets/images/projects/bungalow-exterior-oak-park-01.jpg
     alt: Oak Park bungalow front elevation after full exterior repaint

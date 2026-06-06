@@ -3,7 +3,7 @@ title: Cabinet Refinishing
 slug: cabinet-refinishing
 icon: paint-bucket
 summary: Degrease, sand, and spray-smooth cabinet finishes that look like new—without a full remodel.
-image: /assets/images/services/cabinet-refinishing.jpg
+image: /assets/images/home/cabinet-img.jpg
 order: 3
 featured: false
 draft: false
@@ -11,7 +11,7 @@ draft: false
 seo:
   title: Cabinet Refinishing in Chicagoland
   description: Kitchen cabinet refinishing with thorough degreasing, adhesion-focused prep, and a smooth sprayed finish built for daily use.
-  ogImage: /assets/logos/pilot-painters-logo.png
+  ogImage: /assets/logos/pilot-painters-logo-nbg.png
 
 hero:
   eyebrow: Cabinet services

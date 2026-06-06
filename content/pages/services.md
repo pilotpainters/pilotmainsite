@@ -8,7 +8,7 @@ servicesIndex:
   seo:
     title: Painting Services in Chicagoland
     description: Interior, exterior, cabinet refinishing, and commercial painting for homes and businesses. Licensed, insured, prep-first process, and free quotes within 24 hours.
-    image: /assets/logos/pilot-painters-logo.png
+    image: /assets/logos/pilot-painters-logo-nbg.png
 
   hero:
     heading: Painting services for every surface

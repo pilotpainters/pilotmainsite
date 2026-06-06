@@ -8,7 +8,7 @@ home:
   seo:
     title: Professional Interior & Exterior Painting in Chicagoland
     description: Family-owned Chicagoland painters. Licensed & insured, prep-first process, and free quotes within 24 hours. Interior, exterior, cabinets, and commercial.
-    image: /assets/logos/pilot-painters-logo.png
+    image: /assets/logos/pilot-painters-logo-nbg.png
 
   hero:
     eyebrow: Family-owned painting in Chicagoland
@@ -22,23 +22,22 @@ home:
       href: /projects/
     trustLine: Licensed & Insured - Illinois
     rating:
-      stars: 4.9
-      reviewCount: 126
-      label: 4.9 average rating
-      summary: 4.9 average rating (126 reviews)
+      stars: 0
+      reviewCount: 0
+      label: ""
+      summary: ""
       readMoreLabel: Read more reviews
       readMoreHref: /reviews/
     background:
-      type: gradient
-      from: brand-black
-      to: primary-dark
-      direction: br
+      type: image
+      src: /assets/images/home/banner.png
+      alt: Pilot Painters professional painting services in Chicagoland
 
   trustStrip:
     tone: neutral
     items:
       - icon: calendar-check
-        value: 12+
+        value: 8+
         label: Years serving the area
       - icon: paintbrush
         value: 900+

@@ -6,7 +6,7 @@ draft: false
 
 contact:
   seo:
-    title: Contact Pilot Painters — Free Quote in Chicagoland
+    title: Contact — Free Quote in Chicagoland
     description: Request a free, no-obligation painting quote from Pilot Painters. Interior, exterior, cabinets, and commercial — we respond within 24 hours.
 
   hero:
@@ -38,7 +38,7 @@ contact:
         required: true
       phone:
         label: Phone
-        placeholder: (555) 555-0100
+        placeholder: (872) 310-7709
         required: true
       service:
         label: Service Interested In

@@ -6,7 +6,7 @@ draft: false
 
 legal:
   seo:
-    title: Cookie Policy — Pilot Painters
+    title: Cookie Policy
     description: Learn about the cookies and tracking technologies used on the Pilot Painters website, including what types we use and how to manage your preferences.
 
   hero:
@@ -105,6 +105,6 @@ legal:
       body: |
         If you have any questions about this Cookie Policy, please contact us at:
 
-        - **Email:** hello@pilotpainters.example
-        - **Phone:** (555) 555-0100
+        - **Email:** info@pilotpainters.com
+        - **Phone:** (872) 310-7709
 ---

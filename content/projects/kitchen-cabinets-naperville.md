@@ -5,7 +5,7 @@ summary: Warm white cabinet refinishing with clean edge work and a durable cabin
 location: Naperville, IL
 serviceType: cabinet-refinishing
 completedDate: 2026-03-12
-coverImage: /assets/images/projects/kitchen-cabinets-naperville.jpg
+coverImage: /assets/images/home/home-kitchen-cabinets-project-img.jpg
 gallery:
   - src: /assets/images/projects/kitchen-cabinets-naperville-01.jpg
     alt: Refinished white kitchen cabinets with brushed-nickel hardware

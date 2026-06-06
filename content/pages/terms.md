@@ -6,7 +6,7 @@ draft: false
 
 legal:
   seo:
-    title: Terms of Service — Pilot Painters
+    title: Terms of Service
     description: Read the terms and conditions that govern your use of the Pilot Painters website. Covers acceptable use, intellectual property, disclaimers, and governing law.
 
   hero:
@@ -98,7 +98,7 @@ legal:
     - id: dispute-resolution
       heading: Dispute Resolution
       body: |
-        Before initiating any formal legal proceedings, the parties agree to first attempt in good faith to resolve any dispute, claim, or controversy arising out of or relating to these Terms through informal negotiation. You may contact us at hello@pilotpainters.example to initiate this process.
+        Before initiating any formal legal proceedings, the parties agree to first attempt in good faith to resolve any dispute, claim, or controversy arising out of or relating to these Terms through informal negotiation. You may contact us at info@pilotpainters.com to initiate this process.
 
         If the dispute is not resolved within thirty (30) days of the initial contact, either party may proceed with formal legal action in accordance with the Governing Law section above.
 
@@ -114,6 +114,6 @@ legal:
       body: |
         If you have any questions about these Terms of Service, please contact us at:
 
-        - **Email:** hello@pilotpainters.example
-        - **Phone:** (555) 555-0100
+        - **Email:** info@pilotpainters.com
+        - **Phone:** (872) 310-7709
 ---

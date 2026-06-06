@@ -31,3 +31,54 @@
     @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-brand-white;
   }
 }
+
+@layer components {
+  .prose-legal {
+    @apply text-body text-neutral-700;
+  }
+  .prose-legal p {
+    @apply mt-4 first:mt-0;
+  }
+  .prose-legal a {
+    @apply text-primary underline hover:text-primary-dark;
+  }
+  .prose-legal strong {
+    @apply font-semibold text-neutral-900;
+  }
+  .prose-legal em {
+    @apply italic;
+  }
+  .prose-legal ul {
+    @apply mt-3 list-disc pl-5 space-y-1;
+  }
+  .prose-legal ol {
+    @apply mt-3 list-decimal pl-5 space-y-1;
+  }
+  .prose-legal li {
+    @apply text-neutral-700;
+  }
+  .prose-legal blockquote {
+    @apply mt-4 border-l-4 border-neutral-300 pl-4 italic text-neutral-600;
+  }
+  .prose-legal hr {
+    @apply my-8 border-t border-neutral-200;
+  }
+  .prose-legal code {
+    @apply rounded bg-neutral-100 px-1.5 py-0.5 text-small text-neutral-800;
+  }
+  .prose-legal pre {
+    @apply mt-4 overflow-x-auto rounded-md bg-neutral-100 p-4 text-small;
+  }
+  .prose-legal pre code {
+    @apply bg-transparent p-0;
+  }
+  .prose-legal table {
+    @apply mt-4 w-full text-small;
+  }
+  .prose-legal th {
+    @apply border-b border-neutral-300 pb-2 text-left font-semibold text-neutral-900;
+  }
+  .prose-legal td {
+    @apply border-b border-neutral-200 py-2 text-neutral-700;
+  }
+}

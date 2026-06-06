@@ -1,0 +1,158 @@
+---
+/**
+ * MobileNav — slide-in drawer for viewports below `md` breakpoint.
+ *
+ * Vanilla JS (~40 lines) manages open/close state, focus trapping,
+ * body scroll lock, backdrop dismiss, and Escape key handling.
+ * Visible only below `md`; hidden at `md+` via CSS.
+ */
+import { Icon } from 'astro-icon/components';
+import { siteConfig } from '@config/site.config';
+import { navigation } from '@config/navigation.config';
+import { withBase } from '@/lib/url';
+import { getCollection } from 'astro:content';
+
+const serviceEntries = (await getCollection('services'))
+  .filter((s) => !s.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const cta = navigation.ctaButtons.primary;
+---
+
+<div class="md:hidden">
+  <button
+    type="button"
+    id="mobile-menu-btn"
+    class="inline-flex items-center justify-center rounded-md p-2 text-neutral-700 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+    aria-label="Open menu"
+    aria-expanded="false"
+    aria-controls="mobile-menu-drawer"
+  >
+    <Icon name="lucide:menu" class="h-6 w-6" aria-hidden="true" />
+  </button>
+</div>
+
+<div
+  id="mobile-menu-backdrop"
+  class="fixed inset-0 z-40 bg-brand-black/50 opacity-0 pointer-events-none transition-opacity duration-200 md:hidden"
+  aria-hidden="true"
+></div>
+
+<div
+  id="mobile-menu-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="mobile-menu-title"
+  class="fixed inset-y-0 right-0 z-50 w-[280px] translate-x-full bg-brand-white shadow-xl transition-transform duration-200 md:hidden"
+>
+  <div class="flex items-center justify-between border-b border-neutral-100 px-4 py-4">
+    <p id="mobile-menu-title" class="text-h6 font-semibold text-neutral-900">{siteConfig.company}</p>
+    <button
+      type="button"
+      id="mobile-menu-close"
+      class="inline-flex items-center justify-center rounded-md p-2 text-neutral-700 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      aria-label="Close menu"
+    >
+      <Icon name="lucide:x" class="h-5 w-5" aria-hidden="true" />
+    </button>
+  </div>
+
+  <nav aria-label="Mobile navigation" class="flex-1 overflow-y-auto px-4 py-6">
+    <ul class="space-y-1">
+      {navigation.headerNav.map((item) =>
+        item.label === 'Services' ? (
+          <li>
+            <a
+              href={withBase(item.href)}
+              class="block rounded-md px-3 py-2 text-body font-medium text-neutral-900 hover:bg-neutral-50 hover:text-primary"
+            >
+              {item.label}
+            </a>
+            <ul class="ml-4 mt-1 space-y-1 border-l border-neutral-200 pl-3">
+              {serviceEntries.map((svc) => (
+                <li>
+                  <a
+                    href={withBase(`/services/${svc.data.slug}/`)}
+                    class="block rounded-md px-3 py-1.5 text-small text-neutral-700 hover:bg-neutral-50 hover:text-primary"
+                  >
+                    {svc.data.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ) : (
+          <li>
+            <a
+              href={withBase(item.href)}
+              class="block rounded-md px-3 py-2 text-body font-medium text-neutral-900 hover:bg-neutral-50 hover:text-primary"
+            >
+              {item.label}
+            </a>
+          </li>
+        )
+      )}
+    </ul>
+  </nav>
+
+  <div class="border-t border-neutral-100 px-4 py-4 space-y-3">
+    <a
+      href={withBase(cta.href)}
+      class="block w-full rounded-md bg-primary px-4 py-2.5 text-center text-body font-semibold text-brand-white hover:bg-primary-dark"
+    >
+      {cta.label}
+    </a>
+    <a
+      href={`tel:${siteConfig.phoneTel}`}
+      class="flex items-center justify-center gap-2 rounded-md border border-neutral-200 px-4 py-2.5 text-small font-medium text-neutral-700 hover:bg-neutral-50"
+    >
+      <Icon name="lucide:phone" class="h-4 w-4" aria-hidden="true" />
+      {siteConfig.phone}
+    </a>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  const btn = document.getElementById('mobile-menu-btn');
+  const close = document.getElementById('mobile-menu-close');
+  const drawer = document.getElementById('mobile-menu-drawer');
+  const backdrop = document.getElementById('mobile-menu-backdrop');
+  if (!btn || !close || !drawer || !backdrop) return;
+
+  function open() {
+    drawer.classList.remove('translate-x-full');
+    backdrop.classList.remove('opacity-0', 'pointer-events-none');
+    btn.setAttribute('aria-expanded', 'true');
+    btn.setAttribute('aria-label', 'Close menu');
+    document.body.style.overflow = 'hidden';
+    close.focus();
+  }
+
+  function shut() {
+    drawer.classList.add('translate-x-full');
+    backdrop.classList.add('opacity-0', 'pointer-events-none');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', 'Open menu');
+    document.body.style.overflow = '';
+    btn.focus();
+  }
+
+  btn.addEventListener('click', open);
+  close.addEventListener('click', shut);
+  backdrop.addEventListener('click', shut);
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') shut();
+  });
+
+  drawer.addEventListener('keydown', function(e) {
+    if (e.key !== 'Tab') return;
+    var focusable = drawer.querySelectorAll('a[href], button, [tabindex]:not([tabindex="-1"])');
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+})();
+</script>

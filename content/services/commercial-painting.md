@@ -3,7 +3,7 @@ title: Commercial Painting
 slug: commercial-painting
 icon: shield-check
 summary: Offices and retail spaces painted on a schedule that respects tenants, customers, and operating hours.
-image: /assets/images/services/commercial-painting.jpg
+image: /assets/images/home/home-commercial-painting-card-img.jpg
 order: 4
 featured: false
 draft: false
@@ -11,7 +11,7 @@ draft: false
 seo:
   title: Commercial Painting in Chicagoland
   description: Low-disruption commercial painting with phased work, clear communication, and durable coatings suited to high-traffic interiors.
-  ogImage: /assets/logos/pilot-painters-logo.png
+  ogImage: /assets/logos/pilot-painters-logo-nbg.png
 
 hero:
   eyebrow: Commercial services

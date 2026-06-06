@@ -2,16 +2,14 @@
 import Container from '../layout/Container.astro';
 
 interface Props {
-  /** Background tone. */
   tone?: 'white' | 'neutral' | 'dark' | 'primary';
-  /** Vertical padding scale. */
   spacing?: 'sm' | 'md' | 'lg';
-  /** Container size — set to `null` to opt out of the container. */
   containerSize?: 'sm' | 'default' | 'lg' | 'full' | null;
   id?: string;
   class?: string;
-  /** Optional id of heading element for `aria-labelledby`. */
   labelledby?: string;
+  'aria-labelledby'?: string;
+  'aria-label'?: string;
 }
 
 const {
@@ -21,7 +19,11 @@ const {
   id,
   class: className = '',
   labelledby,
+  'aria-labelledby': ariaLabelledby,
+  'aria-label': ariaLabel,
 } = Astro.props;
+
+const resolvedLabelledby = labelledby ?? ariaLabelledby;
 
 const tones = {
   white: 'bg-brand-white text-neutral-700',
@@ -37,7 +39,12 @@ const spacings = {
 } as const;
 ---
 
-<section id={id} aria-labelledby={labelledby ?? undefined} class:list={[tones[tone], spacings[spacing], className]}>
+<section
+  id={id}
+  aria-labelledby={resolvedLabelledby ?? undefined}
+  aria-label={ariaLabel ?? undefined}
+  class:list={[tones[tone], spacings[spacing], className]}
+>
   {
     containerSize ? (
       <Container size={containerSize}>

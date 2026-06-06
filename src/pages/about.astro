@@ -6,7 +6,7 @@ import Card from '@/components/ui/Card.astro';
 import CTABand from '@/components/ui/CTABand.astro';
 import ServiceAreaMap from '@/components/ui/ServiceAreaMap.astro';
 import { Icon } from 'astro-icon/components';
-import { Image } from 'astro:assets';
+
 import { getEntry, render } from 'astro:content';
 import { withBase } from '@/lib/url';
 import { resolvePublicImage } from '@/lib/images';
@@ -71,13 +71,14 @@ const aboutPageJsonLd = {
             <Content />
           </div>
           <div class="mx-auto w-full max-w-xs lg:max-w-none">
-            <Image
+            <img
               src={withBase(storyImageSrc)}
               alt={about.story.imageAlt}
-              width={480}
-              height={480}
+              width="480"
+              height="480"
               class="aspect-square w-full rounded-lg bg-neutral-50 object-cover shadow-md"
               loading="lazy"
+              decoding="async"
             />
           </div>
         </div>

@@ -1,0 +1,26 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Button from '@/components/ui/Button.astro';
+import { Icon } from 'astro-icon/components';
+import { withBase } from '@/lib/url';
+---
+
+<BaseLayout title="Page Not Found" noindex={true}>
+  <main class="flex-1">
+    <Section tone="white" spacing="lg">
+      <div class="mx-auto max-w-lg text-center">
+        <Icon name="lucide:compass" class="mx-auto h-16 w-16 text-neutral-300" aria-hidden="true" />
+        <h1 class="mt-6 text-[5rem] font-bold leading-none text-primary">404</h1>
+        <p class="mt-4 text-h3 text-neutral-900">We can&rsquo;t find that page</p>
+        <p class="mt-3 text-body text-neutral-700">
+          The page you&rsquo;re looking for may have been moved or no longer exists.
+        </p>
+        <div class="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <Button href={withBase('/')} variant="primary" size="md">Back to home</Button>
+          <Button href={withBase('/services/')} variant="outline" size="md">Browse our services</Button>
+        </div>
+      </div>
+    </Section>
+  </main>
+</BaseLayout>

@@ -3,19 +3,12 @@ import { siteConfig } from '@config/site.config';
 import { absoluteUrl } from '@/lib/url';
 
 interface Props {
-  /** Per-page title (without the site suffix); falls back to the configured default. */
   title?: string;
-  /** Per-page description; falls back to the configured default. */
   description?: string;
-  /** OG/Twitter share image — site-relative path or absolute URL. */
   image?: string;
-  /** Override canonical URL; defaults to the current page absolute URL. */
   canonical?: string;
-  /** Open Graph type — `website` for marketing pages, `article` for blog/case-studies. */
   type?: 'website' | 'article';
-  /** Set true to ask search engines not to index the page. */
   noindex?: boolean;
-  /** Optional additional JSON-LD blocks (Service, Review, FAQPage, etc.). */
   jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
@@ -30,12 +23,27 @@ const {
 } = Astro.props;
 
 const siteUrl = siteConfig.seo.siteUrl;
+const brandSuffix = ` | ${siteConfig.company}`;
 
-const fullTitle = title
-  ? siteConfig.seo.titleTemplate.replace('%s', title)
-  : siteConfig.seo.defaultTitle;
+function buildTitle(pageTitle?: string): string {
+  if (!pageTitle) return siteConfig.seo.defaultTitle;
+  if (pageTitle.includes(siteConfig.company)) return pageTitle;
+  return `${pageTitle}${brandSuffix}`;
+}
 
-const canonicalUrl = canonical ?? Astro.url.href;
+const fullTitle = buildTitle(title);
+
+function normalizeCanonical(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (!parsed.pathname.endsWith('/')) parsed.pathname += '/';
+    return parsed.toString();
+  } catch {
+    return url.endsWith('/') ? url : `${url}/`;
+  }
+}
+
+const canonicalUrl = normalizeCanonical(canonical ?? Astro.url.href);
 const ogImageUrl = absoluteUrl(image, siteUrl);
 
 const localBusinessJsonLd = {

@@ -5,7 +5,7 @@ summary: Bright, clean finishes for a medical office — completed over a holida
 location: Schaumburg, IL
 serviceType: commercial-painting
 completedDate: 2025-11-22
-coverImage: /assets/images/projects/dental-clinic-schaumburg.jpg
+coverImage: /assets/images/home/home-dental-clinic-project-img.jpg
 gallery:
   - src: /assets/images/projects/dental-clinic-schaumburg-01.jpg
     alt: Dental clinic waiting room with light blue accent wall and white trim

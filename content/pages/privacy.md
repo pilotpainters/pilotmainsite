@@ -6,7 +6,7 @@ draft: false
 
 legal:
   seo:
-    title: Privacy Policy — Pilot Painters
+    title: Privacy Policy
     description: Learn how Pilot Painters collects, uses, and safeguards your personal information when you visit our website or request a quote.
 
   hero:
@@ -117,8 +117,8 @@ legal:
       body: |
         If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at:
 
-        - **Email:** hello@pilotpainters.example
-        - **Phone:** (555) 555-0100
+        - **Email:** info@pilotpainters.com
+        - **Phone:** (872) 310-7709
 
         We will make every effort to respond to your inquiry promptly.
 ---

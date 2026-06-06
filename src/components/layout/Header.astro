@@ -1,10 +1,10 @@
 ---
 /**
- * Primary site header. Desktop (`md+`): “Services” shows a CSS-only hover/focus-within
- * submenu (zero client JS). Mobile: single “Services” link to `/services/` — full list
- * lives on the services index page.
+ * Primary site header. Desktop (`md+`): "Services" shows a CSS-only hover/focus-within
+ * submenu (zero client JS). Mobile (`<md`): hamburger drawer via MobileNav.
  */
 import Container from './Container.astro';
+import MobileNav from './MobileNav.astro';
 import Button from '../ui/Button.astro';
 import { Icon } from 'astro-icon/components';
 import { siteConfig } from '@config/site.config';
@@ -12,7 +12,7 @@ import { navigation } from '@config/navigation.config';
 import { withBase } from '@/lib/url';
 import { getCollection } from 'astro:content';
 
-const logoSrc = withBase('/assets/logos/pilot-painters-logo.png');
+const logoSrc = withBase('/assets/logos/pilot-painters-logo-nbg.png');
 const homeHref = withBase('/');
 const cta = navigation.ctaButtons.primary;
 
@@ -84,12 +84,11 @@ const serviceEntries = (await getCollection('services'))
       </ul>
     </nav>
 
-    <div class="hidden md:block">
-      <Button href={withBase(cta.href)} variant="primary" size="md">{cta.label}</Button>
-    </div>
-
-    <div class="md:hidden">
-      <Button href={withBase(cta.href)} variant="primary" size="sm">{cta.label}</Button>
+    <div class="flex items-center gap-3">
+      <div class="hidden md:block">
+        <Button href={withBase(cta.href)} variant="primary" size="md">{cta.label}</Button>
+      </div>
+      <MobileNav />
     </div>
   </Container>
 </header>
