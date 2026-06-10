@@ -44,6 +44,8 @@ export interface SeoDefaults {
   /** Public, fully-qualified URL where the site is served, no trailing slash. */
   siteUrl: string;
   twitterHandle?: string;
+  /** When true, every page emits noindex/nofollow until SEO launch. */
+  noindex: boolean;
 }
 
 export interface SiteConfig {
@@ -110,5 +112,7 @@ export const siteConfig: SiteConfig = {
     defaultOgImage: '/assets/logos/pilot-painters-logo-nbg.png',
     locale: 'en-US',
     siteUrl: 'https://pilotpainters.github.io/pilotmainsite',
+    // Pre-launch: block search indexing. Set to false when SEO is ready.
+    noindex: true,
   },
 };

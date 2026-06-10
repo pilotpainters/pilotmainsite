@@ -17,6 +17,7 @@ interface Props {
 }
 
 const { title, description, image, canonical, type, noindex, jsonLd } = Astro.props;
+const noindexResolved = noindex ?? siteConfig.seo.noindex;
 
 const faviconHref = withBase('/assets/logos/favicon-32x32.png');
 ---
@@ -35,7 +36,7 @@ const faviconHref = withBase('/assets/logos/favicon-32x32.png');
       image={image}
       canonical={canonical}
       type={type}
-      noindex={noindex}
+      noindex={noindexResolved}
       jsonLd={jsonLd}
     />
 
