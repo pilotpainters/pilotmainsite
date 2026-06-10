@@ -20,8 +20,8 @@ import icon from 'astro-icon';
  * Also remember to mirror `site` in `config/site.config.ts → seo.siteUrl`.
  */
 export default defineConfig({
-  site: 'https://pilotpainters.github.io',
-  base: '/pilotmainsite',
+  site: 'https://pilotpainters.com',
+  base: '/',
   output: 'static',
   trailingSlash: 'ignore',
   integrations: [

@@ -1,4 +1,6 @@
 # Pre-launch: discourage crawlers until SEO is ready.
-# When launching, change to "Allow: /" and restore the Sitemap line below.
+# When launching, change to "Allow: /" and uncomment the Sitemap line below.
 User-agent: *
 Disallow: /
+
+# Sitemap: https://pilotpainters.com/sitemap-index.xml

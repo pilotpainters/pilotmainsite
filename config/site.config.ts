@@ -111,7 +111,7 @@ export const siteConfig: SiteConfig = {
     // Temporary fallback: use the logo PNG.
     defaultOgImage: '/assets/logos/pilot-painters-logo-nbg.png',
     locale: 'en-US',
-    siteUrl: 'https://pilotpainters.github.io/pilotmainsite',
+    siteUrl: 'https://pilotpainters.com',
     // Pre-launch: block search indexing. Set to false when SEO is ready.
     noindex: true,
   },
